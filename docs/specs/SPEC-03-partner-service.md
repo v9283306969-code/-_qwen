@@ -359,8 +359,9 @@ type Mutation {
 | `services/partner-service/src/services/network_service.py` | Обход сети (CTE) | [ ] |
 | `services/partner-service/src/routers/` | FastAPI роутеры | [ ] |
 | `services/partner-service/src/tests/` | Тесты | [ ] |
-| `services/partner-service/Dockerfile` | Docker-образ (Python) | [ ] |
-| `services/partner-service/requirements.txt` | Python зависимости | [ ] |
+| `services/partner-service/Dockerfile` | Docker-образ (Python multi-stage, slim) | ✅ scaffold |
+| `services/partner-service/requirements.txt` | Python зависимости (FastAPI, uvicorn — scaffold) | ✅ scaffold |
+| `services/partner-service/src/main.py` | FastAPI scaffold с `/health` | ✅ scaffold |
 | `services/partner-service/pyproject.toml` | Конфигурация проекта | [ ] |
 
 ---
@@ -386,15 +387,15 @@ type Mutation {
 | 13 | Интеграционные тесты | [ ] | | |
 | 14 | Property-based тесты | [ ] | | |
 | 15 | Health check, логирование | [ ] | | |
-| 16 | Dockerfile (Python multi-stage) | [ ] | | |
+| 16 | Dockerfile (Python multi-stage) | ✅ scaffold | 2026-05-27 | Multi-stage, non-root, HEALTHCHECK (python urllib) |
 | 17 | Деактивация неактивных промокодов | [ ] | | |
 
 ### Текущий контекст
 
-- **Последнее действие:** —
-- **Следующий шаг:** Шаг 1: Настройка проекта
+- **Последнее действие:** Шаг 16 (Dockerfile scaffold) — 2026-05-27, Docker Compose верификация прошла успешно
+- **Следующий шаг:** Шаг 1: Настройка проекта (FastAPI, SQLAlchemy, Alembic, pydantic) — Этап 3
 - **Открытые вопросы:** —
-- **Временное состояние:** Файлы не созданы
+- **Временное состояние:** FastAPI scaffold работает в Docker (port 3003, `/health` healthy)
 
 ---
 

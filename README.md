@@ -9,12 +9,13 @@ Headless CMS + Микросервисы + MLM партнёрская сеть
 cp .env.example .env.local
 # (заполни .env.local своими значениями)
 
-# 2. Устанавливаем зависимости (только root для docker)
-pnpm install
+# 2. Запускаем Docker (всё одной командой)
+docker compose up -d --build
+# => Запускается: PostgreSQL, Redis, Strapi-scaffold, Gateway, Product, Order, Partner
 
-# 3. Запускаем всё одной командой
-pnpm dev
-# => Запускается: PostgreSQL, Redis, Strapi, Gateway, Product, Order, Partner
+# 3. Проверяем
+docker compose ps
+# => Все 7 контейнеров должны быть healthy
 ```
 
 ## 📁 Структура
@@ -40,3 +41,31 @@ pnpm dev
 - **Бэкенд (Node.js):** NestJS, Drizzle ORM, Zod
 - **Бэкенд (Python):** FastAPI, SQLAlchemy, pydantic
 - **Инфраструктура:** Docker, PostgreSQL, Redis, Strapi, GitHub Actions
+
+## 🐳 Сервисы (Docker Compose)
+
+| Сервис | Порт | Статус | Описание |
+|---|---|---|---|
+| PostgreSQL | 5432 | ✅ | Основная БД (все сервисы) |
+| Redis | 6379 | ✅ | Кэш, сессии, корзины |
+| Strapi | 1337 | ⏳ scaffold | Express-заглушка, полноценный Strapi — Этап 4 |
+| Gateway | 4000 | ⏳ scaffold | Express `/health`, GraphQL — Этап 3 |
+| Product Service | 3001 | ⏳ scaffold | Express `/health`, NestJS — Этап 3 |
+| Order Service | 3002 | ⏳ scaffold | Express `/health`, NestJS — Этап 3 |
+| Partner Service | 3003 | ⏳ scaffold | FastAPI `/health`, код — Этап 3 |
+
+## 🛠 Полезные команды
+
+```bash
+# Запуск всех сервисов
+docker compose up -d --build
+
+# Логи конкретного сервиса
+docker compose logs -f gateway
+
+# Остановка
+docker compose down
+
+# Полная очистка (включая volumes)
+docker compose down -v
+```

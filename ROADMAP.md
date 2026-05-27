@@ -40,7 +40,7 @@
 | 2.2 | Создание дорожной карты реализации | ✅ |
 | 2.3 | Создание технических заданий (ТЗ) | ✅ | Создано 6 файлов: SPEC-01...06 в `docs/specs/` |
 | 2.4 | Создание репозитория проекта | ✅ | Инициализирован Git, 42 файла, `.gitignore` обновлён (Python, секреты, OS-temp), `.gitattributes` для EOL
-| 2.5 | Настройка Docker Compose | ✅ | 3 compose-файла (prod/dev/override), 4 Dockerfile (multi-stage), health checks, `.env.example`, CI с Docker-build stage
+| 2.5 | Настройка Docker Compose | ✅ | 3 compose-файла, 4 Dockerfile (multi-stage), 7 контейнеров healthy (PostgreSQL, Redis, Strapi-scaffold, Gateway, Product, Order, Partner), scaffold-код (Express/FastAPI с `/health`), `.env.example`, CI pipeline
 | 2.6 | Настройка CI/CD | ⏳ |
 
 ## Этап 3: Разработка MVP
@@ -106,11 +106,12 @@
 Следующий шаг: **2.6 — Настройка CI/CD** (pre-commit hooks, Conventional Commits, release-ветки).
 Подробнее: `PROJECT-LIFECYCLE.md` → Шаг 2.6
 
-### Результаты проверки шага 2.5 (2026-05-27)
+### Заметки по инфраструктуре (шаг 2.5 завершён)
 
-Docker Compose протестирован на реальной машине:
-- ✅ PostgreSQL 16 — поднимается, health check проходит
-- ✅ Redis 7 — поднимается, health check проходит
-- ❌ Strapi — команда `npx strapi new` устарела, требует исправления (Этап 4)
-- ❌ Микросервисы — Dockerfile каркасы готовы, код будет на Этапе 3
-- ⚠️ `version: '3.9'` — устаревший атрибут, можно удалить
+Docker Compose полностью проверен на реальной машине (2026-05-27):
+- ✅ Все 7 контейнеров запускаются одной командой `docker compose up -d --build`
+- ✅ Все health checks проходят
+- ✅ PostgreSQL, Redis — volume persistence работает
+- ⏳ Strapi: Express-заглушка (scaffold). Полноценный Strapi v5 — Этап 4
+- ⏳ Микросервисы: Express/FastAPI заглушки с `/health`. Реальный код — Этап 3
+- ⏳ CI pipeline (`.github/workflows/ci.yml`) — конфигурация готова, тестирование — шаг 2.6

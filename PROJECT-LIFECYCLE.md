@@ -101,10 +101,11 @@
 - **Результат:** Структура папок на гитхабе
 
 ### ШАГ 2.5: Настройка Docker Compose
-- **Что:** Создать docker-compose.yml с PostgreSQL, Redis, Strapi
+- **Что:** Создать docker-compose.yml с PostgreSQL, Redis, Strapi + 4 Dockerfile (multi-stage)
 - **Роль:** DevOps
 - **Промт:** `templates/devops.md`
-- **Результат:** `docker-compose.yml`, `docker/` папка
+- **Результат:** `docker-compose.yml` (main), `docker-compose.dev.yml` (live-reload), `docker-compose.prod.yml` (resource limits), 4 Dockerfile (gateway, product, order, partner), 4 .dockerignore, scaffold-код для всех сервисов (Express/FastAPI с `/health`), `.env.example`, `.github/workflows/ci.yml`
+- **Верификация (2026-05-27):** 7 контейнеров подняты, все healthy. PostgreSQL + Redis — volume persistence. Strapi — Express-scaffold (полноценный Strapi — Этап 4). Микросервисы — заглушки (реальный код — Этап 3).
 
 ### ШАГ 2.6: Настройка CI/CD
 - **Что:** GitHub Actions для тестов, сборки, деплоя

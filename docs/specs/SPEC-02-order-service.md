@@ -430,8 +430,11 @@ type Mutation {
 | `services/order-service/src/interceptors/correlation-id.interceptor.ts` | Interceptor для correlationId | [ ] |
 | `services/order-service/src/utils/status-transitions.ts` | Машина состояний заказов | [ ] |
 | `services/order-service/src/tests/` | Unit и интеграционные тесты | [ ] |
-| `services/order-service/Dockerfile` | Docker-образ | [ ] |
-| `services/order-service/package.json` | Зависимости, скрипты | [ ] |
+| `services/order-service/Dockerfile` | Docker-образ (multi-stage, pnpm@9, Node 20) | ✅ scaffold |
+| `services/order-service/package.json` | Зависимости (express scaffold), скрипты | ✅ scaffold |
+| `services/order-service/tsconfig.json` | TypeScript конфигурация | ✅ scaffold |
+| `services/order-service/tsconfig.build.json` | TypeScript build конфиг | ✅ scaffold |
+| `services/order-service/src/main.ts` | Express scaffold с `/health` | ✅ scaffold |
 | `services/order-service/.env.example` | Пример переменных окружения | [ ] |
 
 ---
@@ -459,20 +462,19 @@ type Mutation {
 | 12 | Internal REST controllers | [ ] | | |
 | 13 | Unit-тесты (логика корзины, заказа, платежей, статусов) | [ ] | | |
 | 14 | Интеграционные тесты (Redis, mock external services) | [ ] | | |
-| 15 | Dockerfile, .env.example | [ ] | | |
+| 15 | Dockerfile, .env.example | ✅ scaffold | 2026-05-27 | Multi-stage, pnpm@9, non-root, HEALTHCHECK |
 | 16 | Интеграция: Product Service (stock check, reservation) | [ ] | | |
 | 17 | Интеграция: Partner Service (promo codes, bonuses) | [ ] | | |
 
 ### Текущий контекст
 
-_Заполняется в конце каждой сессии:_
-- **Последнее действие:** —
-- **Следующий шаг:** Шаг 1: Настройка проекта (NestJS, Drizzle, Redis, зависимости)
+- **Последнее действие:** Шаг 15 (Dockerfile scaffold) — 2026-05-27, Docker Compose верификация прошла успешно
+- **Следующий шаг:** Шаг 1: Настройка проекта (NestJS, Drizzle, Redis, зависимости) — Этап 3
 - **Открытые вопросы:**
   - Сколько часов дать таймаут на неоплаченный заказ? (предложение: 24 часа)
   - Нужен ли механизм повторной попытки платежа при отказе ЮKassa?
   - Требуется ли частичный возврат (return отдельных позиций)?
-- **Временное состояние:** Файлы не созданы
+- **Временное состояние:** Express scaffold работает в Docker (port 3002, `/health` healthy)
 
 ---
 

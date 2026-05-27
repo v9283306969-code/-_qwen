@@ -240,8 +240,11 @@ product_media (id, product_id, strapi_media_id, image_url, alt_text, is_primary,
 | `services/product-service/src/services/category.service.ts` | Бизнес-логика категорий | [ ] |
 | `services/product-service/src/resolvers/product.resolver.ts` | GraphQL-резолверы | [ ] |
 | `services/product-service/src/tests/` | Тесты | [ ] |
-| `services/product-service/Dockerfile` | Docker-образ | [ ] |
-| `services/product-service/package.json` | Зависимости, скрипты | [ ] |
+| `services/product-service/Dockerfile` | Docker-образ (multi-stage, pnpm@9, Node 20) | ✅ scaffold |
+| `services/product-service/package.json` | Зависимости (express scaffold), скрипты | ✅ scaffold |
+| `services/product-service/tsconfig.json` | TypeScript конфигурация | ✅ scaffold |
+| `services/product-service/tsconfig.build.json` | TypeScript build конфиг | ✅ scaffold |
+| `services/product-service/src/main.ts` | Express scaffold с `/health` | ✅ scaffold |
 
 ---
 
@@ -264,16 +267,15 @@ product_media (id, product_id, strapi_media_id, image_url, alt_text, is_primary,
 | 8 | Redis кэш (TTL, инвалидация) | [ ] | | |
 | 9 | Health check, логирование | [ ] | | |
 | 10 | Unit + интеграционные тесты | [ ] | | |
-| 11 | Dockerfile | [ ] | | |
+| 11 | Dockerfile | ✅ scaffold | 2026-05-27 | Multi-stage, pnpm@9, non-root, HEALTHCHECK |
 | 12 | Интеграция со Strapi (вебхук) | [ ] | | |
 
 ### Текущий контекст
 
-_Заполняется в конце каждой сессии:_
-- **Последнее действие:** —
-- **Следующий шаг:** Шаг 1: Настройка проекта
-- **Открытые вопросы:** —
-- **Временное состояние:** Файлы не созданы
+- **Последнее действие:** Шаг 11 (Dockerfile scaffold) — 2026-05-27, Docker Compose верификация прошла успешно
+- **Следующий шаг:** Шаг 1: Настройка проекта (NestJS, Drizzle, зависимости) — Этап 3
+- **Открытые вопросы:** Выбор между Express (scaffold) и NestJS (production) — архитектура предполагает NestJS
+- **Временное состояние:** Express scaffold работает в Docker (port 3001, `/health` healthy)
 
 ---
 
