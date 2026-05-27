@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Архитектура — Multi-Level E-Commerce Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; line-height: 1.7; }
+        nav { background: #0f3460; padding: 15px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        nav h1 { color: #fff; font-size: 1.3em; margin-bottom: 8px; }
+        nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+        nav ul li a { color: #a8c0e0; text-decoration: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; transition: all 0.2s; }
+        nav ul li a:hover { background: #16213e; color: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #0f3460 0%, #533483 100%); color: white; padding: 40px 30px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(15,52,96,0.3); }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header .meta { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px; font-size: 0.9em; opacity: 0.9; }
+        .header .meta span { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; }
+        section { background: #fff; border-radius: 12px; padding: 30px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        section h2 { color: #0f3460; font-size: 1.5em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid #533483; }
+        section h3 { color: #533483; font-size: 1.2em; margin: 20px 0 10px 0; }
+        section p { margin-bottom: 12px; text-align: justify; }
+        .table-wrapper { overflow-x: auto; margin: 15px 0; border-radius: 8px; box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        thead { background: #0f3460; color: #fff; }
+        th { padding: 12px 15px; text-align: left; font-weight: 600; white-space: nowrap; }
+        td { padding: 10px 15px; border-bottom: 1px solid #e8e8e8; }
+        tbody tr:hover { background: #f8f9fa; }
+        tbody tr:nth-child(even) { background: #fafafa; }
+        tbody tr:nth-child(even):hover { background: #f0f1f3; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin: 15px 0; }
+        .card { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 20px; transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .card h4 { color: #0f3460; margin-bottom: 10px; font-size: 1.1em; }
+        .card p { font-size: 0.95em; margin-bottom: 8px; }
+        .tech-badge { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; margin: 3px; font-weight: bold; }
+        .tech-badge.optional { background: #e0e0e0; color: #666; }
+        .arch-diagram { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 10px; padding: 25px; margin: 20px 0; font-family: 'Consolas', 'Courier New', monospace; }
+        .arch-row { display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; margin: 10px 0; }
+        .arch-box { padding: 12px 18px; border-radius: 8px; color: white; font-weight: bold; text-align: center; min-width: 140px; }
+        .arch-box.frontend { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .arch-box.backend { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .arch-box.database { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .arch-box.external { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333; }
+        .arch-box.infra { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); color: #333; }
+        .arch-box.client { background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); color: #333; }
+        .arch-arrow { text-align: center; font-size: 2em; color: #533483; margin: 5px 0; }
+        .arch-label { text-align: center; color: #666; font-style: italic; margin: 5px 0; font-size: 0.9em; }
+        .tip { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-left: 4px solid #f5576c; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 15px 0; }
+        .tip strong { color: #f5576c; }
+        .info-box { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-left: 4px solid #0f3460; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 15px 0; }
+        .info-box strong { color: #0f3460; }
+        .decision-box { background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); border-left: 4px solid #533483; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 15px 0; }
+        .decision-box strong { color: #533483; }
+        ul.feature-list { list-style: none; margin: 15px 0; }
+        ul.feature-list li { padding: 8px 0 8px 30px; position: relative; }
+        ul.feature-list li::before { content: "→"; position: absolute; left: 0; color: #533483; font-weight: bold; font-size: 1.2em; }
+        .number-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; padding: 8px 12px; background: #f8f9fa; border-radius: 8px; }
+        .number-row .label { flex: 1; }
+        .number-row .value { font-size: 1.2em; font-weight: bold; color: #533483; }
+        .check-box { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; padding: 12px 15px; margin: 8px 0; }
+        .check-box strong { color: #0f3460; }
+        footer { text-align: center; padding: 30px 20px; color: #666; border-top: 1px solid #e0e0e0; margin-top: 20px; }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5em; }
+            section { padding: 20px; }
+            .cards { grid-template-columns: 1fr; }
+            .arch-row { flex-direction: column; gap: 8px; }
+            .arch-box { min-width: 100%; }
+            th, td { font-size: 0.85em; padding: 8px 10px; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 10px; }
+            .header { padding: 25px 15px; }
+            section { padding: 15px; }
+            section h2 { font-size: 1.2em; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h1>🏗️ Архитектура — Multi-Level E-Commerce Platform</h1>
+    <ul>
+        <li><a href="#overview">Обзор</a></li>
+        <li><a href="#stack">Стек</a></li>
+        <li><a href="#diagram">Схема</a></li>
+        <li><a href="#microservices">Микросервисы</a></li>
+        <li><a href="#data">Данные</a></li>
+        <li><a href="#api">API</a></li>
+        <li><a href="#flow">Потоки</a></li>
+        <li><a href="#deploy">Развёртывание</a></li>
+        <li><a href="#security">Безопасность</a></li>
+        <li><a href="#scale">Масштабирование</a></li>
+        <li><a href="#phases">Фазы</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+<div class="header">
+    <h1>🏗️ Архитектура Multi-Level E-Commerce Platform</h1>
+    <p>Техническое проектирование интернет-магазина с партнёрской сетью на headless CMS и микросервисной архитектуре</p>
+    <div class="meta">
+        <span>📅 25 мая 2026</span>
+        <span>📄 Версия 1.0</span>
+        <span>🎯 Голова: MVP</span>
+        <span>💡 Паттерн: Микросервисы (поэтапные)</span>
+    </div>
+</div>
+
+<!-- 1. ОБЗОР -->
+<section id="overview">
+    <h2>1. Общее описание архитектуры</h2>
+
+    <h3>Тип архитектуры</h3>
+    <p><strong>Headless CMS + Микросервисы</strong></p>
+
+    <div class="info-box">
+        <p><strong>Почему не монолит:</strong> У нас разные категории товаров (косметика + БАДы), сложная партнёрская логика (3 уровня, ранги, бонусы) и личный кабинет. Монолит будет расти и станет неподдерживаемым. С микросервисами каждый компонент развивается отдельно и не ломает остальные.</p>
+    </div>
+
+    <p><strong>Почему не Serverless:</strong> На старте это дорого (платите за каждый вызов). Когда сеть вырастет — переведём часть сервисов в Serverless.</p>
+
+    <h3>Основные принципы</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Принцип</th>
+                <th>Что означает</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Разделение ответственности</strong></td>
+                <td>Каждый сервис делает одну вещь и делает её хорошо</td>
+            </tr>
+            <tr>
+                <td><strong>Независимое развёртывание</strong></td>
+                <td>Обновление одного сервиса не требует остановки остальных</td>
+            </tr>
+            <tr>
+                <td><strong>GraphQL-first для клиентов</strong></td>
+                <td>Один запрос = все данные для страницы, оптимизация для мобильных</td>
+            </tr>
+            <tr>
+                <td><strong>REST между сервисами</strong></td>
+                <td>Внутренняя коммуникация — REST, проще и быстрее</td>
+            </tr>
+            <tr>
+                <td><strong>MVP-first</strong></td>
+                <td>Начинаем с минимального набора сервисов, добавляем по мере роста</td>
+            </tr>
+            <tr>
+                <td><strong>Простота на старте</strong></td>
+                <td>Не используем Kubernetes, пока не нужно. Docker Compose достаточно.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Краткая схема (обзор)</h3>
+
+    <div class="arch-diagram">
+        <div class="arch-label">Обзор архитектуры</div>
+        <div class="arch-row">
+            <div class="arch-box client">👤 Покупатель</div>
+            <div class="arch-box client">💼 Реализатор</div>
+            <div class="arch-box client">👑 Агент</div>
+        </div>
+        <div class="arch-arrow">⬇️</div>
+        <div class="arch-label">Интерфейс (Frontend)</div>
+        <div class="arch-row">
+            <div class="arch-box frontend">🌐 Сайт (Next.js)</div>
+            <div class="arch-box frontend">📱 Админка (React)</div>
+        </div>
+        <div class="arch-arrow">⬇️ через API Gateway / BFF</div>
+        <div class="arch-label">Бэкенд (Микросервисы)</div>
+        <div class="arch-row">
+            <div class="arch-box backend">🛒 Каталог</div>
+            <div class="arch-box backend">🛍️ Корзина / Заказы</div>
+            <div class="arch-box backend">🎫 Промокоды</div>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box backend">💰 Бонусы</div>
+            <div class="arch-box backend">👥 Пользователи</div>
+            <div class="arch-box backend">🏆 Ранги</div>
+        </div>
+        <div class="arch-arrow">⬇️</div>
+        <div class="arch-label">Данные</div>
+        <div class="arch-row">
+            <div class="arch-box database">🗄️ PostgreSQL</div>
+            <div class="arch-box database">⚡ Redis</div>
+            <div class="arch-box database">📦 Strapi CMS</div>
+        </div>
+        <div class="arch-arrow">⬇️</div>
+        <div class="arch-label">Внешние сервисы</div>
+        <div class="arch-row">
+            <div class="arch-box external">💳 ЮKassa</div>
+            <div class="arch-box external">🚚 СДЭК</div>
+            <div class="arch-box external">📨 Email/SMS</div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. СТЕК ТЕХНОЛОГИЙ -->
+<section id="stack">
+    <h2>2. Стек технологий</h2>
+
+    <p>Каждая технология выбрана по критериям: <strong>цена (бесплатно на старте)</strong>, <strong>популярность (легко найти разработчиков)</strong>, <strong>простота (новичок поймёт)</strong>.</p>
+
+    <h3>Фронтенд (сайт + админка)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Компонент</th>
+                <th>Технология</th>
+                <th>Почему</th>
+                <th>Альтернативы</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Фронтенд-фреймворк</strong></td>
+                <td><span class="tech-badge">Next.js 14</span></td>
+                <td>Рендеринг на сервере (SSR) → быстрая загрузка, SEO-дружелюбный, большая экосистема</td>
+                <td>Vue.js + Nuxt, Astro</td>
+            </tr>
+            <tr>
+                <td><strong>UI-библиотека</strong></td>
+                <td><span class="tech-badge">React + TailwindCSS</span></td>
+                <td>Готовые компоненты, лёгкая кастомизация, быстро для новичка</td>
+                <td>Material UI, Chakra UI</td>
+            </tr>
+            <tr>
+                <td><strong>Админка</strong></td>
+                <td><span class="tech-badge">Refine</span> (на базе React)</td>
+                <td>Встроенные CRUD, таблицы, фильтры — экономит 70% времени на админку</td>
+                <td>Strapi Admin (встроенный), React Admin</td>
+            </tr>
+            <tr>
+                <td><strong>Состояние приложения</strong></td>
+                <td><span class="tech-badge">Zustand</span></td>
+                <td>Простой, лёгкий, для e-commerce достаточно</td>
+                <td>Redux Toolkit, Jotai</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Бэкенд (микросервисы)</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Компонент</th>
+                <th>Технология</th>
+                <th>Почему</th>
+                <th>Альтернативы</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Язык</strong></td>
+                <td><span class="tech-badge">Node.js + TypeScript</span></td>
+                <td>Один язык для фронтенда и бэкенда, огромная экосистема, легко найти разработчиков</td>
+                <td>Python (FastAPI), Go</td>
+            </tr>
+            <tr>
+                <td><strong>Фреймворк API (клиент)</strong></td>
+                <td><span class="tech-badge">GraphQL (Apollo Server)</span></td>
+                <td>Один запрос = все данные для страницы, нет overfetching/underfetching, критично для мобильных</td>
+                <td>REST (для вебхуков внешних сервисов)</td>
+            </tr>
+            <tr>
+                <td><strong>Клиент GraphQL</strong></td>
+                <td><span class="tech-badge">Apollo Client</span></td>
+                <td>Автоматическое кэширование на клиенте, оптимистичные обновления, работа при слабом интернете</td>
+                <td>urql, SWR + fetch</td>
+            </tr>
+            <tr>
+                <td><strong>Межсервисная коммуникация</strong></td>
+                <td><span class="tech-badge">REST</span></td>
+                <td>Между микросервисами REST проще и быстрее; GraphQL только «фасад» для клиентов</td>
+                <td>gRPC, tRPC</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Данные</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Компонент</th>
+                <th>Технология</th>
+                <th>Почему</th>
+                <th>Альтернативы</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Головная база данных</strong></td>
+                <td><span class="tech-badge">PostgreSQL 16</span></td>
+                <td>Транзакции, надёжность, JSON-поля (гибкость), бесплатна</td>
+                <td>MySQL, MongoDB</td>
+            </tr>
+            <tr>
+                <td><strong>ORM</strong></td>
+                <td><span class="tech-badge">Drizzle ORM</span></td>
+                <td>Лёгкая (7kb), ближе к SQL, быстрее Prisma, отличная поддержка TypeScript</td>
+                <td>Prisma, TypeORM</td>
+            </tr>
+            <tr>
+                <td><strong>Кэш/Сессии</strong></td>
+                <td><span class="tech-badge">Redis 7</span></td>
+                <td>Быстрый, простой, для корзины, сессий, кэша товаров</td>
+                <td>Memcached</td>
+            </tr>
+            <tr>
+                <td><strong>Хедлесс CMS</strong></td>
+                <td><span class="tech-badge">Strapi (Self-hosted)</span></td>
+                <td>Бесплатная, open-source, REST + GraphQL API, админка из коробки</td>
+                <td>Directus, Payload CMS, Sanity</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Инфраструктура</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Компонент</th>
+                <th>Технология</th>
+                <th>Почему</th>
+                <th>Альтернативы</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Контейнеризация</strong></td>
+                <td><span class="tech-badge">Docker + Docker Compose</span></td>
+                <td>Стандарт, легко запустить локально, бесплатно</td>
+                <td>Podman</td>
+            </tr>
+            <tr>
+                <td><strong>Хостинг фронтенда</strong></td>
+                <td><span class="tech-badge">Vercel</span></td>
+                <td>Бесплатный тариф, автоматический деплой из Git, оптимизация Next.js</td>
+                <td>Netlify, Railway</td>
+            </tr>
+            <tr>
+                <td><strong>Хостинг бэкенда</strong></td>
+                <td><span class="tech-badge">Railway</span></td>
+                <td>Бесплатный тариф, простой деплой Docker-контейнеров</td>
+                <td>Render, Fly.io, свой VPS</td>
+            </tr>
+            <tr>
+                <td><strong>База данных (облако)</strong></td>
+                <td><span class="tech-badge">Supabase</span></td>
+                <td>PostgreSQL бесплатно, бэкапы, удобный интерфейс</td>
+                <td>Neon, ElephantSQL, свой сервер</td>
+            </tr>
+            <tr>
+                <td><strong>Redis (облако)</strong></td>
+                <td><span class="tech-badge optional">Upstash</span></td>
+                <td>Бесплатный тариф, serverless, pay-per-use</td>
+                <td>Redis Cloud, свой сервер</td>
+            </tr>
+            <tr>
+                <td><strong>CI/CD</strong></td>
+                <td><span class="tech-badge">GitHub Actions</span></td>
+                <td>Бесплатно для публичных реп, интеграция с Vercel/Railway</td>
+                <td>GitLab CI</td>
+            </tr>
+            <tr>
+                <td><strong>Мониторинг</strong></td>
+                <td><span class="tech-badge optional">Sentry</span></td>
+                <td>Бесплатный тариф, автоматический отчёт об ошибках</td>
+                <td>LogRocket, New Relic</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="decision-box">
+        <p><strong>Итоговая стоимость на старте:</strong></p>
+        <div class="number-row"><span class="label">Хостинг фронтенда (Vercel)</span><span class="value">0₽</span></div>
+        <div class="number-row"><span class="label">Хостинг бэкенда (Railway)</span><span class="value">$5/мес.</span></div>
+        <div class="number-row"><span class="label">База данных (Supabase)</span><span class="value">0₽</span></div>
+        <div class="number-row"><span class="label">Redis (Upstash)</span><span class="value">0₽</span></div>
+        <div class="number-row"><span class="label">Strapi (Self-hosted)</span><span class="value">$5/мес. (Railway)</span></div>
+        <div class="number-row"><span class="label">Домен (.ru)</span><span class="value">200–500₽/год</span></div>
+        <div class="number-row" style="background: #e8f5e9;"><span class="label"><strong>Итого</strong></span><span class="value" style="color: #43e97b;"><strong>~$10/мес.</strong></span></div>
+    </div>
+</section>
+
+<!-- 3. СХЕМА АРХИТЕКТУРЫ -->
+<section id="diagram">
+    <h2>3. Подробная схема архитектуры</h2>
+
+    <h3>Структура сервисов (MVP)</h3>
+    <div class="info-box">
+        <p><strong>На старте</strong> мы не делаем все 6 микросервисов сразу. Начинаем с <strong>3 сервисов + Strapi</strong>, остальное добавляем по мере роста. Это экономит время и ресурсы.</p>
+    </div>
+
+    <div class="arch-diagram">
+        <div class="arch-label">Фаза 1 (MVP) — 3 сервиса</div>
+        <div class="arch-row">
+            <div class="arch-box client">👤 Клиенты (покупатели, агенты, реализаторы)</div>
+        </div>
+        <div class="arch-arrow">⬇️</div>
+        <div class="arch-row">
+            <div class="arch-box frontend">🌐 Сайт (Next.js) — витрина, корзина, оформление заказа</div>
+        </div>
+        <div class="arch-arrow">⬇️ API запросы</div>
+        <div class="arch-row">
+            <div class="arch-box backend">🛒 Сервис товаров (каталог, цены, категории)</div>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box backend">🛍️ Сервис заказов (корзина, оформление, статус)</div>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box backend">🎫 Сервис партнёрки (пользователи, промокоды, бонусы, ранги)</div>
+        </div>
+        <div class="arch-arrow">⬇️</div>
+        <div class="arch-row">
+            <div class="arch-box database">🗄️ PostgreSQL — товары, заказы, пользователи, транзакции</div>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box database">📦 Strapi CMS — контент, описания, SEO, медиа</div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="arch-diagram">
+        <div class="arch-label">Фаза 2 (рост) — 6 сервисов</div>
+        <div class="arch-row">
+            <div class="arch-box backend">🛒 Каталог</div>
+            <div class="arch-box backend">🛍️ Заказы</div>
+            <div class="arch-box backend">🎫 Партнёрка</div>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box backend">💰 Выплаты</div>
+            <div class="arch-box backend">📧 Уведомления</div>
+            <div class="arch-box backend">📊 Аналитика</div>
+        </div>
+        <div class="arch-arrow">⬇️</div>
+        <div class="arch-row">
+            <div class="arch-box database">🗄️ PostgreSQL (основная)</div>
+            <div class="arch-box database">⚡ Redis (кэш + сессии)</div>
+            <div class="arch-box database">📦 Strapi CMS</div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="arch-diagram">
+        <div class="arch-label">Фаза 3 (масштабирование) — полная архитектура</div>
+        <div class="arch-row">
+            <div class="arch-box backend">🛒 Каталог</div>
+            <div class="arch-box backend">🛍️ Заказы</div>
+            <div class="arch-box backend">🎫 Партнёрка</div>
+            <div class="arch-box backend">💰 Выплаты</div>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box backend">📧 Уведомления</div>
+            <div class="arch-box backend">📊 Аналитика</div>
+            <div class="arch-box backend">🔍 Поиск</div>
+            <div class="arch-box backend">🚚 Доставка</div>
+        </div>
+        <div class="arch-arrow">⬇️ Queue (RabbitMQ/Kafka)</div>
+        <div class="arch-row">
+            <div class="arch-box database">🗄️ PostgreSQL</div>
+            <div class="arch-box database">⚡ Redis</div>
+            <div class="arch-box database">📦 Strapi</div>
+            <div class="arch-box database optional">🔍 Elasticsearch</div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. МИКРОСЕРВИСЫ -->
+<section id="microservices">
+    <h2>4. Подробное описание микросервисов</h2>
+
+    <p>Каждый микросервис — это отдельное приложение с <strong>своим API, своей базой данных (или схемой в общей БД)</strong> и <strong>своей областью ответственности</strong>.</p>
+
+    <div class="cards">
+        <div class="card">
+            <h4>🛒 Сервис товаров (Product Service)</h4>
+            <p><strong>Что делает:</strong> Каталог, категории, цены, наличие, фото</p>
+            <p><strong>API:</strong> GET /products, GET /products/:id, GET /categories</p>
+            <p><strong>Данные:</strong> Таблицы products, categories, product_prices, inventory</p>
+            <p><strong>Зависимости:</strong> Strapi (для контента/описаний), PostgreSQL</p>
+            <p><strong>Почему отдельно:</strong> Каталог — самая читаемая часть, кэшируется в Redis</p>
+        </div>
+        <div class="card">
+            <h4>🛍️ Сервис заказов (Order Service)</h4>
+            <p><strong>Что делает:</strong> Корзина, оформление заказа, статусы, история</p>
+            <p><strong>API:</strong> POST /cart, POST /checkout, GET /orders/:id</p>
+            <p><strong>Данные:</strong> Таблицы carts, orders, order_items, payments</p>
+            <p><strong>Зависимости:</strong> Redis (корзина), PostgreSQL (заказы), ЮKassa (оплата)</p>
+            <p><strong>Почему отдельно:</strong> Самая нагруженная часть при покупке, нужно масштабировать</p>
+        </div>
+        <div class="card">
+            <h4>🎫 Сервис партнёрки (Partner Service)</h4>
+            <p><strong>Стек:</strong> <span class="tech-badge">Python + FastAPI</span></p>
+            <p><strong>Что делает:</strong> Пользователи, промокоды, бонусы, ранги, цепочки</p>
+            <p><strong>API:</strong> POST /register, POST /apply-promo, GET /bonuses, POST /recalculate-ranks</p>
+            <p><strong>Данные:</strong> users, promo_codes, network_links, bonus_transactions, ranks, rank_history</p>
+            <p><strong>Зависимости:</strong> PostgreSQL, Redis (сессии), Email/SMS (уведомления)</p>
+            <p><strong>Почему отдельно и Python:</strong> Самая сложная логика — графовые вычисления, обходы сети. Python лучше для алгоритмов на графах и статистики.</p>
+        </div>
+        <div class="card" style="opacity: 0.7;">
+            <h4>💰 Сервис выплат (Payout Service) — Фаза 2</h4>
+            <p><strong>Что делает:</strong> Расчёт выплат, реестры, интеграция с банком</p>
+            <p><strong>API:</strong> POST /calculate, POST /payout, GET /payouts</p>
+            <p><strong>Данные:</strong> payouts, payout_schedules, bank_accounts</p>
+            <p><strong>Зависимости:</strong> Сервис партнёрки (бонусы), банк (СБП/ЮKassa)</p>
+        </div>
+        <div class="card" style="opacity: 0.7;">
+            <h4>📧 Сервис уведомлений (Notification Service) — Фаза 2</h4>
+            <p><strong>Что делает:</strong> Email, SMS, push-уведомления</p>
+            <p><strong>API:</strong> POST /send-email, POST /send-sms, POST /send-push</p>
+            <p><strong>Зависимости:</strong> SMTP-сервер, SMS-шлюз, Firebase (push)</p>
+        </div>
+        <div class="card" style="opacity: 0.7;">
+            <h4>📊 Сервис аналитики (Analytics Service) — Фаза 2</h4>
+            <p><strong>Стек:</strong> <span class="tech-badge">Python + FastAPI</span></p>
+            <p><strong>Что делает:</strong> Статистика, воронки, топ-агенты, отчёты</p>
+            <p><strong>API:</strong> GET /stats, GET /leaderboard, GET /funnel</p>
+            <p><strong>Зависимости:</strong> Все сервисы (читает данные), pandas для анализа</p>
+        </div>
+    </div>
+
+    <h3>Разделение баз данных</h3>
+    <p>Каждый сервис имеет <strong>свою схему</strong> в PostgreSQL (или свою БД на масштабе):</p>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Сервис</th>
+                    <th>Схема БД</th>
+                    <th>Таблицы</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>🛒 Товары</td>
+                    <td><code>product_service</code></td>
+                    <td>products, categories, product_prices, inventory, media</td>
+                </tr>
+                <tr>
+                    <td>🛍️ Заказы</td>
+                    <td><code>order_service</code></td>
+                    <td>carts, orders, order_items, payments, shipping</td>
+                </tr>
+                <tr>
+                    <td>🎫 Партнёрка</td>
+                    <td><code>partner_service</code></td>
+                    <td>users, promo_codes, network_links, bonus_transactions, ranks</td>
+                </tr>
+                <tr>
+                    <td>💰 Выплаты</td>
+                    <td><code>payout_service</code></td>
+                    <td>payouts, payout_schedules, bank_accounts</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 5. МОДЕЛЬ ДАННЫХ -->
+<section id="data">
+    <h2>5. Модель данных (ключевые таблицы)</h2>
+
+    <h3>Схема: Партнёрка (partner_service)</h3>
+
+    <div class="check-box">
+        <p><strong>users</strong></p>
+        <table>
+            <thead>
+                <tr><th>Поле</th><th>Тип</th><th>Описание</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>UUID</td><td>Уникальный ID</td></tr>
+                <tr><td>email</td><td>string</td><td>Email (уникальный)</td></tr>
+                <tr><td>phone</td><td>string</td><td>Телефон</td></tr>
+                <tr><td>level</td><td>int (1-3)</td><td>Уровень участника</td></tr>
+                <tr><td>rank</td><td>enum</td><td>Текущий ранг (start, bronze, silver, gold)</td></tr>
+                <tr><td>rank_multiplier</td><td>float</td><td>Текущий множитель (1.0, 1.2, 1.5, 2.0)</td></tr>
+                <tr><td>balance</td><td>decimal</td><td>Баланс бонусов</td></tr>
+                <tr><td>registered_at</td><td>timestamp</td><td>Дата регистрации</td></tr>
+                <tr><td>referral_code_id</td><td>UUID</td><td>Промокод, по которому зарегистрировался</td></tr>
+                <tr><td>own_promo_code_id</td><td>UUID</td><td>Свой уникальный промокод</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="check-box">
+        <p><strong>promo_codes</strong></p>
+        <table>
+            <thead>
+                <tr><th>Поле</th><th>Тип</th><th>Описание</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>UUID</td><td>Уникальный ID</td></tr>
+                <tr><td>code</td><td>string</td><td>Текст промокода (AGENT-ABC123)</td></tr>
+                <tr><td>qr_code_url</td><td>string</td><td>Ссылка на QR-код (PNG)</td></tr>
+                <tr><td>owner_id</td><td>UUID</td><td>ID владельца (пользователя 1 ур.)</td></tr>
+                <tr><td>is_active</td><td>boolean</td><td>Активен ли</td></tr>
+                <tr><td>created_at</td><td>timestamp</td><td>Дата создания</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="check-box">
+        <p><strong>network_links</strong> (цепочка связей)</p>
+        <table>
+            <thead>
+                <tr><th>Поле</th><th>Тип</th><th>Описание</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>UUID</td><td>Уникальный ID</td></tr>
+                <tr><td>upline_id</td><td>UUID</td><td>Кто привёл (родитель)</td></tr>
+                <tr><td>downline_id</td><td>UUID</td><td>Кого привёл (ребёнок)</td></tr>
+                <tr><td>level</td><td>int</td><td>Глубина связи (1 = прямой, 2 = через одного и т.д.)</td></tr>
+                <tr><td>promo_code_used</td><td>UUID</td><td>Промокод, по которому зарегистрировался</td></tr>
+                <tr><td>created_at</td><td>timestamp</td><td>Дата регистрации</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="check-box">
+        <p><strong>bonus_transactions</strong></p>
+        <table>
+            <thead>
+                <tr><th>Поле</th><th>Тип</th><th>Описание</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>UUID</td><td>Уникальный ID</td></tr>
+                <tr><td>order_id</td><td>UUID</td><td>Связь с заказом</td></tr>
+                <tr><td>user_id</td><td>UUID</td><td>Кому начислен бонус</td></tr>
+                <tr><td>amount</td><td>decimal</td><td>Сумма бонуса</td></tr>
+                <tr><td>percentage</td><td>float</td><td>Процент от суммы заказа</td></tr>
+                <tr><td>type</td><td>enum</td><td>bonus_1_level, bonus_2_level, discount_3_level</td></tr>
+                <tr><td>status</td><td>enum</td><td>pending, confirmed, reverted, paid</td></tr>
+                <tr><td>hold_until</td><td>timestamp</td><td>Дата окончания задержки (7-14 дней)</td></tr>
+                <tr><td>created_at</td><td>timestamp</td><td>Дата начисления</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Схема: Заказы (order_service)</h3>
+    <div class="check-box">
+        <p><strong>orders</strong></p>
+        <table>
+            <thead>
+                <tr><th>Поле</th><th>Тип</th><th>Описание</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>id</td><td>UUID</td><td>Уникальный ID</td></tr>
+                <tr><td>user_id</td><td>UUID</td><td>Кто заказал</td></tr>
+                <tr><td>promo_code_id</td><td>UUID</td><td>Применённый промокод</td></tr>
+                <tr><td>total_amount</td><td>decimal</td><td>Сумма до скидок</td></tr>
+                <tr><td>discount_amount</td><td>decimal</td><td>Скидка покупателя</td></tr>
+                <tr><td>final_amount</td><td>decimal</td><td>Итоговая сумма</td></tr>
+                <tr><td>status</td><td>enum</td><td>pending, paid, shipped, delivered, returned, cancelled</td></tr>
+                <tr><td>payment_id</td><td>string</td><td>ID платежа (от ЮKassa)</td></tr>
+                <tr><td>created_at</td><td>timestamp</td><td>Дата создания</td></tr>
+                <tr><td>updated_at</td><td>timestamp</td><td>Дата обновления</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Связи между таблицами</h3>
+    <div class="arch-diagram">
+        <div class="arch-label">Связи ключевых таблиц</div>
+        <div class="arch-row">
+            <div class="arch-box database" style="background: #0f3460;">users<br><small>id, level, rank, balance</small></div>
+        </div>
+        <div class="arch-arrow">⬇️ 1:N</div>
+        <div class="arch-row">
+            <div class="arch-box database" style="background: #533483;">network_links<br><small>upline_id → downline_id</small></div>
+        </div>
+        <div class="arch-arrow">⬇️ N:1</div>
+        <div class="arch-row">
+            <div class="arch-box database" style="background: #11998e;">promo_codes<br><small>owner_id, code, is_active</small></div>
+        </div>
+        <div class="arch-arrow">⬇️ N:1</div>
+        <div class="arch-row">
+            <div class="arch-box database" style="background: #f5576c;">orders<br><small>user_id, promo_code_id, total</small></div>
+        </div>
+        <div class="arch-arrow">⬇️ 1:N</div>
+        <div class="arch-row">
+            <div class="arch-box database" style="background: #fcb69f; color: #333;">bonus_transactions<br><small>order_id, user_id, amount, status</small></div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. API -->
+<section id="api">
+    <h2>6. API контракты (основные эндпоинты)</h2>
+
+    <div class="info-box">
+        <p><strong>Клиентский API — GraphQL.</strong> Все запросы с фронтенда идут через <code>/api/graphql</code> — один запрос получает всё, что нужно для страницы. <strong>Между микросервисами</strong> используется REST (внутренняя коммуникация). Вебхуки от ЮKassa/СДЭК — REST.</p>
+    </div>
+
+    <h3>📱 GraphQL Schema (основные Query и Mutation)</h3>
+    <table>
+        <thead><tr><th>Тип</th><th>Query/Mutation</th><th>Что делает</th><th>Доступ</th></tr></thead>
+        <tbody>
+            <tr><td>Query</td><td><code>products(filter, pagination)</code></td><td>Список товаров с фильтрами и пагинацией</td><td>Все</td></tr>
+            <tr><td>Query</td><td><code>product(id)</code></td><td>Детали товара + related products</td><td>Все</td></tr>
+            <tr><td>Query</td><td><code>categories</code></td><td>Список категорий</td><td>Все</td></tr>
+            <tr><td>Query</td><td><code>me</code></td><td>Мой профиль + ранг + бонусы + сеть</td><td>Авторизованный</td></tr>
+            <tr><td>Query</td><td><code>myCart</code></td><td>Корзина пользователя</td><td>Авторизованный</td></tr>
+            <tr><td>Query</td><td><code>myOrders</code></td><td>История заказов</td><td>Авторизованный</td></tr>
+            <tr><td>Query</td><td><code>productPage(id)</code></td><td><strong>Композитная:</strong> товар + отзывы + похожие + моя корзина</td><td>Все</td></tr>
+            <tr><td>Mutation</td><td><code>register(input)</code></td><td>Регистрация с промокодом</td><td>Все</td></tr>
+            <tr><td>Mutation</td><td><code>login(email, password)</code></td><td>Вход</td><td>Все</td></tr>
+            <tr><td>Mutation</td><td><code>addToCart(productId, qty)</code></td><td>Добавить в корзину</td><td>Авторизованный</td></tr>
+            <tr><td>Mutation</td><td><code>checkout(input)</code></td><td>Оформить заказ</td><td>Авторизованный</td></tr>
+            <tr><td>Mutation</td><td><code>payOrder(orderId)</code></td><td>Оплатить через ЮKassa</td><td>Владелец заказа</td></tr>
+            <tr><td>Admin Query</td><td><code>allUsers, allOrders, stats</code></td><td>Админские запросы</td><td>Админ</td></tr>
+            <tr><td>Admin Mutation</td><td><code>updateBonuses, updateRanks</code></td><td>Настройка бонусов/рангов</td><td>Супер-админ</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Пример: страница товара одним GraphQL-запросом</h3>
+    <div class="arch-diagram">
+        <pre style="white-space: pre; color: #333;">
+query ProductPage($id: ID!) {
+  product(id: $id) {
+    name
+    price
+    description
+    images { url alt }
+    category { name slug }
+    reviews(limit: 5) {
+      author
+      rating
+      text
+      date
+    }
+  }
+  relatedProducts(category: $id, limit: 4) {
+    name price image
+  }
+  me {
+    cartCount
+    bonuses
+    rank
+  }
+}
+
+/* Результат: 1 запрос ~120ms вместо 4 REST-запросов ~350ms */
+/* Экономия: 65% времени загрузки на мобильном интернете */
+        </pre>
+    </div>
+
+    <h3>REST эндпоинты (внутренние + вебхуки)</h3>
+    <table>
+        <thead><tr><th>Сервис</th><th>Эндпоинт</th><th>Назначение</th></tr></thead>
+        <tbody>
+            <tr><td>Product</td><td><code>GET /internal/products/:id</code></td><td>Внутренний вызов из GraphQL resolver</td></tr>
+            <tr><td>Order</td><td><code>POST /internal/orders</code></td><td>Создание заказа из GraphQL mutation</td></tr>
+            <tr><td>Partner</td><td><code>POST /internal/bonuses/calculate</code></td><td>Расчёт бонусов из GraphQL mutation</td></tr>
+            <tr><td>ЮKassa</td><td><code>POST /webhooks/yookassa</code></td><td>Вебхук оплаты (внешний сервис)</td></tr>
+            <tr><td>СДЭК</td><td><code>POST /webhooks/cdek</code></td><td>Вебхук доставки (внешний сервис)</td></tr>
+        </tbody>
+    </table>
+
+    <div class="tip">
+        <p><strong>GraphQL Playground</strong> доступен по адресу <code>/api/graphql</code> в режиме разработки. Это интерактивная среда, где вы можете писать запросы и сразу видеть ответ — без написания кода. В продакшене отключено.</p>
+    </div>
+</section>
+
+<!-- 7. ПОТОКИ -->
+<section id="flow">
+    <h2>7. Ключевые потоки данных</h2>
+
+    <h3>🔗 Поток: Регистрация по промокоду</h3>
+    <div class="arch-diagram">
+        <div class="arch-label">Что происходит при регистрации нового пользователя</div>
+        <div class="arch-row">
+            <div class="arch-box client">Пользователь (мобильный браузер)</div>
+        </div>
+        <div class="arch-arrow">→ mutation Register($input: RegisterInput!) { register(input: $input) { user { id rank } ownPromoCode } }</div>
+        <div class="arch-row">
+            <div class="arch-box backend">API Gateway (GraphQL Resolver)</div>
+        </div>
+        <div style="padding-left: 20px; color: #666;">
+            <p>1. Вызывает Partner Service (POST /internal/auth/register)</p>
+            <p>2. Проверяет промокод → находит владельца (агент X)</p>
+            <p>3. Создаёт пользователя → уровень 2 (если нашёл агента) или 3</p>
+            <p>4. Записывает network_links: upline=agent X, downline=новый пользователь</p>
+            <p>5. Генерирует свой промокод → записывает в promo_codes</p>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box database">PostgreSQL (users, network_links, promo_codes)</div>
+        </div>
+        <div class="arch-arrow">← Ответ GraphQL: { success: true, user: {...}, ownPromoCode: "USER-XYZ" }</div>
+    </div>
+
+    <h3>💰 Поток: Покупка → начисление бонусов</h3>
+    <div class="arch-diagram">
+        <div class="arch-label">Что происходит при оформлении заказа</div>
+        <div class="arch-row">
+            <div class="arch-box client">Покупатель (мобильный браузер)</div>
+        </div>
+        <div class="arch-arrow">→ mutation Checkout($input: CheckoutInput!) { checkout(input: $input) { order { id total } bonuses { amount user } } }</div>
+        <div class="arch-row">
+            <div class="arch-box backend">API Gateway (GraphQL Resolver)</div>
+        </div>
+        <div style="padding-left: 20px; color: #666;">
+            <p>1. Вызывает Order Service → создаёт заказ</p>
+            <p>2. Вызывает Product Service → проверяет наличие</p>
+            <p>3. Вызывает Partner Service → находит цепочку, начисляет бонусы</p>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box backend">Partner Service</div>
+        </div>
+        <div style="padding-left: 20px; color: #666;">
+            <p>4. Находит цепочку: покупатель → реализатор → агент</p>
+            <p>5. Читает ранги → считает бонусы с множителями</p>
+            <p>6. Создаёт bonus_transactions (status: pending, hold_until: +7 дней)</p>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box database">PostgreSQL (orders, bonus_transactions)</div>
+        </div>
+        <div class="arch-arrow">← Ответ GraphQL: { success: true, order: {...}, bonusesCalculated: [...] }</div>
+    </div>
+
+    <h3>⚡ Поток: Страница товара (оптимизация для мобильных)</h3>
+    <div class="arch-diagram">
+        <div class="arch-label">Один GraphQL-запрос вместо 4 REST-запросов</div>
+        <div class="arch-row">
+            <div class="arch-box client">Мобильный браузер</div>
+        </div>
+        <div class="arch-arrow">→ query { productPage(id: "123") { ... } }</div>
+        <div class="arch-row">
+            <div class="arch-box backend">API Gateway</div>
+        </div>
+        <div style="padding-left: 20px; color: #666;">
+            <p>Параллельно (Promise.all):</p>
+            <p>→ Product Service: товар + категория</p>
+            <p>→ Product Service: похожие товары</p>
+            <p>→ Partner Service: моя корзина + бонусы</p>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box database">PostgreSQL + Redis (кэш товаров)</div>
+        </div>
+        <div class="arch-arrow">← 1 ответ ~120ms (вместо 4× запросов ~350ms с REST)</div>
+    </div>
+
+    <h3>🏆 Поток: Ежемесячный пересчёт рангов</h3>
+    <div class="arch-diagram">
+        <div class="arch-label">1-го числа каждого месяца (крон-задача)</div>
+        <div class="arch-row">
+            <div class="arch-box infra">GitHub Actions (крон)</div>
+        </div>
+        <div class="arch-arrow">→ POST /api/ranks/recalculate</div>
+        <div class="arch-row">
+            <div class="arch-box backend">Partner Service</div>
+        </div>
+        <div style="padding-left: 20px; color: #666;">
+            <p>1. Для каждого пользователя считает: продажи за 3 месяца</p>
+            <p>2. Сравнивает с условиями рангов</p>
+            <p>3. Если ранг изменится → обновляет rank и rank_multiplier</p>
+            <p>4. Записывает rank_history (для аналитики)</p>
+            <p>5. Отправляет уведомления (сервис уведомлений)</p>
+        </div>
+        <div class="arch-row">
+            <div class="arch-box database">PostgreSQL (users, ranks, rank_history)</div>
+        </div>
+    </div>
+</section>
+
+<!-- 8. РАЗВЁРТЫВАНИЕ -->
+<section id="deploy">
+    <h2>8. Развёртывание (Deployment)</h2>
+
+    <h3>Структура репозитория</h3>
+    <div class="arch-diagram">
+        <div class="arch-label">Структура проекта (monorepo)</div>
+        <pre style="white-space: pre; color: #333;">
+multi-level-ecommerce/
+├── apps/
+│   ├── web/                    # Next.js сайт (фронтенд)
+│   ├── admin/                  # React админка
+│   └── api/                    # NestJS API Gateway
+├── services/
+│   ├── product-service/        # 🛒 Сервис товаров
+│   ├── order-service/          # 🛍️ Сервис заказов
+│   ├── partner-service/        # 🎫 Сервис партнёрки
+│   ├── payout-service/         # 💰 Сервис выплат (Фаза 2)
+│   └── notification-service/   # 📧 Сервис уведомлений (Фаза 2)
+├── packages/
+│   ├── shared/                 # Общие типы, утилиты
+│   └── database/               # Drizzle схемы, миграции
+├── docker/
+│   ├── docker-compose.yml      # Локальная разработка
+│   └── production/             # Dockerfile для каждого сервиса
+├── docs/                       # Документация
+└── package.json                # Monorepo управление (pnpm/turborepo)
+        </pre>
+    </div>
+
+    <h3>Локальная разработка (Docker Compose)</h3>
+    <div class="info-box">
+        <p>Одна команда поднимает всю систему локально:</p>
+        <p><code>docker-compose up -d</code></p>
+        <p>Это запустит: PostgreSQL, Redis, Strapi и все сервисы. Разработчик может работать без настройки окружения.</p>
+    </div>
+
+    <h3>Прод-развёртывание</h3>
+    <table>
+        <thead>
+            <tr><th>Компонент</th><th>Где хостится</th><th>Как деплоится</th><th>Цена</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>🌐 Фронтенд (Next.js)</td><td>Vercel</td><td>Git push → автодеплой</td><td>$0 (бесплатно)</td></tr>
+            <tr><td>📱 Админка (React)</td><td>Vercel</td><td>Git push → автодеплой</td><td>$0 (бесплатно)</td></tr>
+            <tr><td>🔌 API Gateway</td><td>Railway</td><td>Docker → git push → пересборка</td><td>~$5/мес.</td></tr>
+            <tr><td>🛒 Продукты</td><td>Railway</td><td>Docker</td><td>~$5/мес.</td></tr>
+            <tr><td>🛍️ Заказы</td><td>Railway</td><td>Docker</td><td>~$5/мес.</td></tr>
+            <tr><td>🎫 Партнёрка</td><td>Railway</td><td>Docker</td><td>~$5/мес.</td></tr>
+            <tr><td>🗄️ PostgreSQL</td><td>Supabase</td><td>Управляемая БД</td><td>$0 (бесплатный тариф)</td></tr>
+            <tr><td>⚡ Redis</td><td>Upstash</td><td>Serverless</td><td>$0 (бесплатный тариф)</td></tr>
+            <tr><td>📦 Strapi CMS</td><td>Railway</td><td>Docker</td><td>~$5/мес.</td></tr>
+        </tbody>
+    </table>
+
+    <div class="decision-box">
+        <p><strong>Общая стоимость инфраструктуры (3 сервиса MVP):</strong></p>
+        <div class="number-row"><span class="label">Frontend (2 проекта на Vercel)</span><span class="value">$0</span></div>
+        <div class="number-row"><span class="label">Backend (4 контейнера на Railway)</span><span class="value">~$20/мес.</span></div>
+        <div class="number-row"><span class="label">База данных (Supabase)</span><span class="value">$0</span></div>
+        <div class="number-row"><span class="label">Redis (Upstash)</span><span class="value">$0</span></div>
+        <div class="number-row"><span class="label">Домен</span><span class="value">~$5/год</span></div>
+        <div class="number-row" style="background: #e8f5e9;"><span class="label"><strong>Итого</strong></span><span class="value" style="color: #43e97b;"><strong>~$20/мес.</strong></span></div>
+    </div>
+</section>
+
+<!-- 9. БЕЗОПАСНОСТЬ -->
+<section id="security">
+    <h2>9. Безопасность</h2>
+
+    <h3>Аутентификация и авторизация</h3>
+    <table>
+        <thead>
+            <tr><th>Механизм</th><th>Что делает</th><th>Технология</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>JWT (JSON Web Tokens)</td><td>Токен доступа после логина, живёт 15 мин</td><td>NestJS + jsonwebtoken</td></tr>
+            <tr><td>Refresh Tokens</td><td>Токен обновления, живёт 7 дней, храним в HttpOnly cookie</td><td>Redis</td></tr>
+            <tr><td>Password Hashing</td><td>Пароли хэшируются через bcrypt, соль 12+</td><td>bcrypt</td></tr>
+            <tr><td>Roles & Permissions</td><td>user, agent, manager, admin, super-admin</td><td>NestJS Guards</td></tr>
+            <tr><td>Rate Limiting</td><td>Ограничение запросов (100/мин для API)</td><td>NestJS Throttler</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Защита данных</h3>
+    <table>
+        <thead>
+            <tr><th>Угроза</th><th>Защита</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>SQL-инъекции</td><td>Drizzle ORM (параметризированные запросы)</td></tr>
+            <tr><td>XSS (cross-site scripting)</td><td>Next.js автоматически экранирует вывод</td></tr>
+            <tr><td>CSRF</td><td>SameSite cookies + CSRF токены</td></tr>
+            <tr><td>Утечка данных</td><td>HTTPS везде, шифрование чувствительных полей</td></tr>
+            <tr><td>Бэкапы</td><td>Supabase авто-бэкапы ежедневно, хранение 7 дней</td></tr>
+            <tr><td>Платёжные данные</td><td>Не храним! ЮKassa обрабатывает → мы получаем только статус</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Защита партнёрской сети</h3>
+    <table>
+        <thead>
+            <tr><th>Угроза</th><th>Защита</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Фрод промокодов</td><td>Промокод привязан к одному аккаунту, проверка IP, rate limit</td></tr>
+            <tr><td>Само-регистрация</td><td>Отслеживание IP + device fingerprint → блокировка</td></tr>
+            <tr><td>Накрутка бонусов</td><td>Проверка цепочки: только 3 уровня, валидация при каждом начислении</td></tr>
+            <tr><td>Манипуляция с возвратом</td><td>Задержка выплат 7-14 дней, откат транзакций при возврате</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- 10. МАСШТАБИРОВАНИЕ -->
+<section id="scale">
+    <h2>10. План масштабирования</h2>
+
+    <p>Не строим Ferrari на старте. Начинаем с простого, масштабируем по мере роста.</p>
+
+    <h3>0–500 пользователей (Фаза 1)</h3>
+    <table>
+        <thead><tr><th>Что</th><th>Как</th></tr></thead>
+        <tbody>
+            <tr><td>Хостинг</td><td>Vercel + Railway (бесплатные тарифы)</td></tr>
+            <tr><td>БД</td><td>Один PostgreSQL инстанс (Supabase)</td></tr>
+            <tr><td>Кэш</td><td>Один Redis (Upstash, бесплатный)</td></tr>
+            <tr><td>Микросервисы</td><td>3 сервиса в Docker (Railway)</td></tr>
+            <tr><td>Очередь</td><td>Не нужна — синхронные вызовы</td></tr>
+            <tr><td>Мониторинг</td><td>Логи Railway + Sentry</td></tr>
+            <tr><td>Стоимость</td><td>~$20/мес.</td></tr>
+        </tbody>
+    </table>
+
+    <h3>500–10 000 пользователей (Фаза 2)</h3>
+    <table>
+        <thead><tr><th>Что добавляем</th><th>Зачем</th></tr></thead>
+        <tbody>
+            <tr><td>+ Сервис выплат</td><td>Отдельная логика payouts, интеграция с банком</td></tr>
+            <tr><td>+ Сервис уведомлений</td><td>Email, SMS, push — отдельно от бизнес-логики</td></tr>
+            <tr><td>+ Очередь сообщений</td><td>RabbitMQ — асинхронная обработка бонусов</td></tr>
+            <tr><td>Платный тариф Railway</td><td>Больше RAM и CPU</td></tr>
+            <tr><td>Платный Supabase</td><td>Больше хранилища, бэкапы</td></tr>
+            <tr><td>CDN для статики</td><td>Картинки товаров — через Vercel Image Optimization</td></tr>
+            <tr><td>Стоимость</td><td>~$50-100/мес.</td></tr>
+        </tbody>
+    </table>
+
+    <h3>10 000+ пользователей (Фаза 3)</h3>
+    <table>
+        <thead><tr><th>Что добавляем</th><th>Зачем</th></tr></thead>
+        <tbody>
+            <tr><td>Поисковый сервис (Elasticsearch)</td><td>Быстрый поиск по каталогу</td></tr>
+            <tr><td>Сервис доставки</td><td>Интеграция с СДЭК, Почтой, курьерами</td></tr>
+            <tr><td>Репликация БД</td><td>Read-реплики для чтения, Master для записи</td></tr>
+            <tr><td>Kubernetes</td><td>Оркестрация контейнеров, авто-масштабирование</td></tr>
+            <tr><td>Мониторинг + APM</td><td>Datadog / New Relic — полная наблюдаемость</td></tr>
+            <tr><td>Стоимость</td><td>~$200-500/мес.</td></tr>
+        </tbody>
+    </table>
+</section>
+
+<!-- 11. ФАЗЫ РАЗРАБОТКИ -->
+<section id="phases">
+    <h2>11. Фазы разработки</h2>
+
+    <h3>Фаза 1: MVP (4-8 недель)</h3>
+    <p><strong>Цель:</strong> Рабочий магазин с промокодами и бонусами</p>
+
+    <table>
+        <thead><tr><th>Неделя</th><th>Что делаем</th><th>Результат</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Настройка репозитория, Docker, PostgreSQL, Strapi</td><td>Рабочее окружение</td></tr>
+            <tr><td>2</td><td>Product Service + Strapi интеграция</td><td>Каталог товаров + категории</td></tr>
+            <tr><td>3</td><td>Partner Service: регистрация, промокоды, сеть</td><td>Регистрация по промокоду</td></tr>
+            <tr><td>4</td><td>Order Service: корзина, чекаут</td><td>Полный путь заказа</td></tr>
+            <tr><td>5</td><td>Partner Service: бонусы, ранги</td><td>Начисление бонусов</td></tr>
+            <tr><td>6</td><td>Фронтенд (Next.js): витрина, корзина</td><td>Сайт с товарами</td></tr>
+            <tr><td>7</td><td>Фронтенд: личный кабинет</td><td>Профиль, бонусы, сеть</td></tr>
+            <tr><td>8</td><td>Тестирование, деплой, баг-фиксы</td><td>Готовый MVP</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Фаза 2: Рост (2-4 недели)</h3>
+    <table>
+        <thead><tr><th>Неделя</th><th>Что делаем</th><th>Результат</th></tr></thead>
+        <tbody>
+            <tr><td>1-2</td><td>Сервис выплат + интеграция с ЮKassa</td><td>Оплата + автоматические выплаты</td></tr>
+            <tr><td>2-3</td><td>Сервис уведомлений (Email, SMS)</td><td>Уведомления о бонусах, рангах, заказах</td></tr>
+            <tr><td>3-4</td><td>Аналитика + дашборды админки</td><td>Лидерборды, воронки, отчёты</td></tr>
+            <tr><td>4</td><td>Оптимизация, тестирование нагрузки</td><td>Готовность к масштабированию</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Фаза 3: Масштабирование (по мере роста)</h3>
+    <ul class="feature-list">
+        <li>Поисковый сервис (Elasticsearch)</li>
+        <li>Сервис доставки</li>
+        <li>Kubernetes для оркестрации</li>
+        <li>Репликация БД</li>
+        <li>Мобильное приложение (React Native / Flutter)</li>
+    </ul>
+
+    <div class="tip">
+        <p><strong>Важно:</strong> Не делайте Фазу 2 и 3 на старте. Фаза 1 — это достаточно для запуска. Остальное добавляйте, когда придут реальные пользователи и вы увидите, что нужно.</p>
+    </div>
+</section>
+
+<footer>
+    <p><strong>Архитектура Multi-Level E-Commerce Platform</strong> — Техническое проектирование</p>
+    <p>Документ создан: 25 мая 2026 г. | Версия 1.0 | Qwen Code (Архитектор)</p>
+</footer>
+
+</div>
+</body>
+</html>

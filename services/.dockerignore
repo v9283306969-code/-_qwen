@@ -1,0 +1,11 @@
+node_modules
+.git
+.gitignore
+.env*
+Dockerfile
+.dockerignore
+coverage
+.pnpm-store
+pnpm-workspace.yaml
+package.json
+pnpm-lock.yaml

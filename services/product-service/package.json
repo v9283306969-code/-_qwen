@@ -1,0 +1,8 @@
+{
+  "name": "@mlecp/product-service",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/main.js"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir *)",
+      "Agent(general-purpose)",
+      "Bash(del *)",
+      "Bash(chcp *)",
+      "Bash(copy *)",
+      "Bash(git init)"
+    ]
+  },
+  "$version": 4
+}

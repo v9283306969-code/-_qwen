@@ -1,0 +1,166 @@
+version: '3.9'
+
+# Определение сервисов для локальной разработки
+services:
+
+  # ======================
+  # ИНФРАСТРУКТУРА
+  # ======================
+
+  # База данных PostgreSQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: mlecp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-dev}
+      POSTGRES_PASSWORD: ${DB_PASS:-dev_password_change_me}
+      POSTGRES_DB: ${DB_NAME:-mlecp_dev}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-dev} -d ${DB_NAME:-mlecp_dev}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks:
+      - mlecp-network
+
+  # Кэш и очереди Redis
+  redis:
+    image: redis:7-alpine
+    container_name: mlecp-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    networks:
+      - mlecp-network
+
+  # Headless CMS (Strapi)
+  strapi:
+    image: node:20-alpine
+    container_name: mlecp-strapi
+    working_dir: /app
+    command: >
+      sh -c "
+        npm install -g @strapi/strapi &&
+        npx create-strapi-app@latest . --quickstart --no-run &&
+        npm run develop
+      "
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: ${DB_USER:-dev}
+      DATABASE_PASSWORD: ${DB_PASS:-dev_password_change_me}
+      JWT_SECRET: ${JWT_SECRET:-change_me_strapi_secret}
+      ADMIN_JWT_SECRET: ${JWT_SECRET:-change_me_strapi_admin_secret}
+    ports:
+      - "1337:1337"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - mlecp-network
+
+  # ======================
+  # МИКРОСЕРВИСЫ (Stub — пока пустые контейнеры)
+  # ======================
+
+  # API Gateway (GraphQL)
+  gateway:
+    build:
+      context: ./services/gateway
+      dockerfile: Dockerfile
+    container_name: mlecp-gateway
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3000:3000"
+      - "4000:4000" # GraphQL Playground
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mlecp-network
+
+  # Product Service
+  product-service:
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile
+    container_name: mlecp-product-service
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mlecp-network
+
+  # Order Service
+  order-service:
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    container_name: mlecp-order-service
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3002:3002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mlecp-network
+
+  # Partner Service (Python)
+  partner-service:
+    build:
+      context: ./services/partner-service
+      dockerfile: Dockerfile
+    container_name: mlecp-partner-service
+    environment:
+      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mlecp-network
+
+  # ======================
+  # VOLUMES & NETWORKS
+  # ======================
+
+volumes:
+  pgdata:
+
+networks:
+  mlecp-network:
+    driver: bridge

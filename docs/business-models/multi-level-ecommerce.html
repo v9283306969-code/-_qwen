@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Level E-Commerce Platform — Бизнес-модель</title>
+    <style>
+        /* ===== БАЗОВЫЕ СТИЛИ ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            line-height: 1.7;
+        }
+
+        /* ===== НАВИГАЦИЯ ===== */
+        nav {
+            background: #1a1a2e;
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        nav h1 {
+            color: #fff;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        nav ul li a {
+            color: #a0a0c0;
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+
+        nav ul li a:hover {
+            background: #16213e;
+            color: #fff;
+        }
+
+        /* ===== КОНТЕЙНЕР ===== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ===== ШАПКА ===== */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header .meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .header .meta span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* ===== СЕКЦИИ ===== */
+        section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        section h2 {
+            color: #1a1a2e;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        section h3 {
+            color: #764ba2;
+            font-size: 1.2em;
+            margin: 20px 0 10px 0;
+        }
+
+        section p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        /* ===== ТАБЛИЦЫ ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        thead {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        tbody tr:nth-child(even):hover {
+            background: #f0f1f3;
+        }
+
+        /* ===== КАРТОЧКИ ===== */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .card p {
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        /* ===== СХЕМЫ ===== */
+        .scheme {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .scheme-box {
+            text-align: center;
+            line-height: 2;
+        }
+
+        .level-1 {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .level-2 {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .level-3 {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            display: inline-block;
+            margin: 5px;
+            font-weight: bold;
+        }
+
+        .arrow-down {
+            display: block;
+            text-align: center;
+            font-size: 2em;
+            color: #667eea;
+            margin: 5px 0;
+        }
+
+        .arrow-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        /* ===== СПИСКИ ===== */
+        .feature-list {
+            list-style: none;
+            margin: 15px 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0 8px 30px;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #43e97b;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .risk-list li::before {
+            content: "⚠";
+            color: #f5576c;
+        }
+
+        .question-list li::before {
+            content: "?";
+            color: #f093fb;
+            font-weight: bold;
+        }
+
+        .checklist li::before {
+            content: "☐";
+            color: #667eea;
+        }
+
+        /* ===== БЛОКИ ПОДСКАЗОК ===== */
+        .tip {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-left: 4px solid #f5576c;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .tip strong {
+            color: #f5576c;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .info-box strong {
+            color: #1a1a2e;
+        }
+
+        /* ===== ПОДВАЛ ===== */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 20px;
+        }
+
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                gap: 5px;
+            }
+
+            nav ul li a {
+                font-size: 0.75em;
+                padding: 4px 8px;
+            }
+
+            th, td {
+                font-size: 0.85em;
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 25px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.3em;
+            }
+
+            section {
+                padding: 15px;
+            }
+
+            section h2 {
+                font-size: 1.2em;
+            }
+        }
+
+        /* ===== РАЗДЕЛИТЕЛЬ ===== */
+        hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 20px 0;
+        }
+
+        /* ===== ЦИФРЫ ===== */
+        .big-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .number-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .number-row .label {
+            flex: 1;
+        }
+
+        .number-row .value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #764ba2;
+        }
+    </style>
+</head>
+<body>
+
+<!-- НАВИГАЦИЯ -->
+<nav>
+    <h1>📋 Multi-Level E-Commerce Platform</h1>
+    <ul>
+        <li><a href="#concept">Концепция</a></li>
+        <li><a href="#audience">Аудитория</a></li>
+        <li><a href="#structure">Структура</a></li>
+        <li><a href="#ranks">Ранги</a></li>
+        <li><a href="#finance">Финансы</a></li>
+        <li><a href="#promo">Промокоды</a></li>
+        <li><a href="#returns">Возвраты</a></li>
+        <li><a href="#legal">Юридическое</a></li>
+        <li><a href="#admin">Админка</a></li>
+        <li><a href="#marketing">Маркетинг</a></li>
+        <li><a href="#risks">Риски</a></li>
+        <li><a href="#responsibility">Ответственность</a></li>
+        <li><a href="#budget">Бюджет</a></li>
+        <li><a href="#roadmap">Дорожная карта</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+<!-- ШАПКА -->
+<div class="header">
+    <h1>🚀 Multi-Level E-Commerce Platform</h1>
+    <p>Бизнес-модель интернет-магазина с партнёрской сетью, headless CMS и микросервисной архитектурой</p>
+    <div class="meta">
+        <span>📅 25 мая 2026</span>
+        <span>📄 Версия 1.0</span>
+        <span>💰 Бюджет: до $1000 резерв</span>
+        <span>🏷️ Категории: Косметика + БАДы</span>
+    </div>
+</div>
+
+<!-- 1. КОНЦЕПЦИЯ -->
+<section id="concept">
+    <h2>1. Общее описание идеи</h2>
+
+    <h3>Что мы строим?</h3>
+    <p>Мы создаём <strong>интернет-магазин на базе headless CMS</strong>, который отличается от обычного магазина одной ключевой особенностью: у нас есть партнёрская сеть. Клиенты могут не только покупать товар, но и <strong>становиться агентами</strong> — привлекать других людей, получать промокод и зарабатывать процент с продаж по этому промокоду.</p>
+
+    <h3>Что такое headless CMS?</h3>
+    <div class="info-box">
+        <p><strong>Простая аналогия:</strong> Обычная CMS (например, WordPress) — это ресторан, где кухня и зал находятся в одном здании. Headless CMS — это только кухня, которая готовит еду и отдаёт её через окно. А зал (сайт, приложение, умные часы) — вы строите отдельно, как хотите. Это даёт гибкость и скорость.</p>
+    </div>
+
+    <h3>Ключевая механика</h3>
+    <p>Каждый агент получает <strong>уникальный промокод</strong> (или QR-код для печати). Этот промокод передаётся по цепочке:</p>
+
+    <ul class="feature-list">
+        <li><strong>Агент</strong> передаёт промокод <strong>реализатору</strong></li>
+        <li><strong>Реализатор</strong> передаёт тот же промокод <strong>покупателю</strong></li>
+        <li><strong>Покупатель</strong> покупает на сайте — промокод привязан к заказу</li>
+        <li>Система <strong>автоматически</strong> начисляет бонусы всем участникам цепочки</li>
+    </ul>
+
+    <h3>Каталог товаров</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Параметр</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Категория 1</strong></td>
+                    <td>Косметика (уходовые средства, декоративная косметика, профессиональные средства)</td>
+                </tr>
+                <tr>
+                    <td><strong>Категория 2</strong></td>
+                    <td>БАДы (витамины, добавки, спортивное питание, косметические комплексы)</td>
+                </tr>
+                <tr>
+                    <td><strong>Общий учёт</strong></td>
+                    <td>Единая база данных для товарного учёта</td>
+                </tr>
+                <tr>
+                    <td><strong>Раздельная витрина</strong></td>
+                    <td>Разные лендинги/каталоги для каждой категории</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tip">
+        <p><strong>Почему это выгодно:</strong> Один промокод связывает всю цепочку продаж. Агент получает процент со всех продаж по своему промокоду, даже если он не участвовал в них напрямую. Это создаёт <strong>пассивный доход</strong> и мотивирует агентов строить сеть.</p>
+    </div>
+</section>
+
+<!-- 2. ЦЕЛЕВАЯ АУДИТОРИЯ -->
+<section id="audience">
+    <h2>2. Целевая аудитория</h2>
+
+    <p>У нас три разных типа участников. У каждого своя роль, своя мотивация и свой способ заработка.</p>
+
+    <div class="cards">
+        <div class="card">
+            <h4>🛒 Конечные покупатели (3 уровень)</h4>
+            <p><strong>Кто:</strong> Преимущественно женщины, 25-55 лет</p>
+            <p><strong>Интересы:</strong> Косметика, красота, здоровье, уход за собой</p>
+            <p><strong>Мотивация:</strong> Купить качественный товар со скидкой по промокоду</p>
+            <p><strong>Как зарабатывает:</strong> Не зарабатывает — экономит (скидка 10-15%)</p>
+        </div>
+        <div class="card">
+            <h4>💼 Реализаторы (2 уровень)</h4>
+            <p><strong>Кто:</strong> Косметологи, тренеры, мастера, блогеры</p>
+            <p><strong>Активность:</strong> Продают товар своим клиентам из личного ассортимента</p>
+            <p><strong>Мотивация:</strong> Дополнительный доход от продаж + дисконт на товар для себя</p>
+            <p><strong>Как зарабатывает:</strong> Бонус 10-20% с каждой продажи клиенту 3 уровня</p>
+        </div>
+        <div class="card">
+            <h4>👑 Торговые агенты (1 уровень)</h4>
+            <p><strong>Кто:</strong> Активные реализаторы, лидеры сообществ</p>
+            <p><strong>Активность:</strong> Нашли и обучили реализаторов, развивают сеть</p>
+            <p><strong>Мотивация:</strong> Пассивный доход от сети реализаторов</p>
+            <p><strong>Как зарабатывает:</strong> Бонус 8-15% со ВСЕХ продаж по своему промокоду</p>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <p><strong>Важно:</strong> Клиент 2 уровня может стать клиентом 1 уровня. Для этого нужно найти 3 реализаторов и достичь определённого оборота продаж. Это система роста — от покупателя до лидера сети.</p>
+    </div>
+</section>
+
+<!-- 3. СТРУКТУРА УЧАСТНИКОВ -->
+<section id="structure">
+    <h2>3. Структура участников</h2>
+
+    <h3>Как выглядит иерархия</h3>
+    <div class="scheme">
+        <div class="scheme-box">
+            <div class="level-1">👑 Клиент 1 ур. — Торговый агент<br><small>Промокод: AGENT-123<br>Бонус: 8-15% со ВСЕХ продаж сети</small></div>
+            <div class="arrow-down">⬇️</div>
+            <div class="arrow-text">Агент передаёт промокод AGENT-123 трём реализаторам</div>
+            <div class="arrow-down">⬇️</div>
+            <div>
+                <div class="level-2">💼 Клиент 2 ур. (BBB)<br><small>Бонус: 10-20%</small></div>
+                <div class="level-2">💼 Клиент 2 ур. (CCC)<br><small>Бонус: 10-20%</small></div>
+                <div class="level-2">💼 Клиент 2 ур. (DDD)<br><small>Бонус: 10-20%</small></div>
+            </div>
+            <div class="arrow-down">⬇️</div>
+            <div class="arrow-text">Каждый реализатор передаёт тот же промокод AGENT-123 своим покупателям</div>
+            <div class="arrow-down">⬇️</div>
+            <div>
+                <div class="level-3">🛒 Клиент 3 ур.<br><small>Скидка: 10-15%</small></div>
+                <div class="level-3">🛒 Клиент 3 ур.<br><small>Скидка: 10-15%</small></div>
+                <div class="level-3">🛒 Клиент 3 ур.<br><small>Скидка: 10-15%</small></div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Как работает связь через промокод</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Связь</th>
+                    <th>Как происходит</th>
+                    <th>Что получается</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>1 → 2</strong></td>
+                    <td>Агент передаёт свой промокод реализатору. Реализатор регистрируется по этому коду.</td>
+                    <td>Реализатор привязан к сети агента</td>
+                </tr>
+                <tr>
+                    <td><strong>2 → 3</strong></td>
+                    <td>Реализатор передаёт тот же промокод покупателю. Покупатель регистрируется или покупает по коду.</td>
+                    <td>Покупатель привязан к цепочке</td>
+                </tr>
+                <tr>
+                    <td><strong>3 → Магазин</strong></td>
+                    <td>Покупатель покупает товар на сайте. Промокод автоматически привязан к заказу.</td>
+                    <td>Цепочка сработала → бонусы начислены</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tip">
+        <p><strong>Ключевой принцип:</strong> Один промокод = одна цепочка. Все продажи по этому промокоду генерируют бонусы для всех участников цепочки. Это и есть «вирусная» механика — каждый хочет найти больше людей, потому что получает процент с их покупок.</p>
+    </div>
+</section>
+
+<!-- 4. СИСТЕМА РАНГОВ -->
+<section id="ranks">
+    <h2>4. Система рангов</h2>
+
+    <p>Ранги — это система <strong>геймификации</strong>. Чем больше вы работаете, тем выше ваш ранг и тем больше ваш процент. Ранги разные для каждого уровня, потому что у участников разная роль.</p>
+
+    <h3>👑 Клиент 1 уровня (Торговый агент)</h3>
+    <p><strong>Критерий ранга:</strong> Размер сети + оборот сети за последние 3 месяца</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ранг</th>
+                    <th>Активных 2 ур.</th>
+                    <th>Оборот сети</th>
+                    <th>Множитель</th>
+                    <th>Бонус 1 ур.</th>
+                    <th>Бонус 2 ур.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>🟢 Старт</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1.0×</td>
+                    <td>8%</td>
+                    <td>10%</td>
+                </tr>
+                <tr>
+                    <td>🥉 Бронза</td>
+                    <td>3</td>
+                    <td>50 продаж</td>
+                    <td>1.2×</td>
+                    <td>10%</td>
+                    <td>12%</td>
+                </tr>
+                <tr>
+                    <td>🥈 Серебро</td>
+                    <td>10</td>
+                    <td>500 продаж</td>
+                    <td>1.5×</td>
+                    <td>12%</td>
+                    <td>15%</td>
+                </tr>
+                <tr>
+                    <td>🥇 Золото</td>
+                    <td>30</td>
+                    <td>2000 продаж</td>
+                    <td>2.0×</td>
+                    <td>15%</td>
+                    <td>20%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>💼 Клиент 2 уровня (Реализатор)</h3>
+    <p><strong>Критерий ранга:</strong> Личные продажи конечным покупателям за последние 3 месяца</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ранг</th>
+                    <th>Продаж 3 ур.</th>
+                    <th>Личный оборот</th>
+                    <th>Множитель</th>
+                    <th>Бонус 2 ур.</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>🟢 Старт</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>1.0×</td>
+                    <td>10%</td>
+                </tr>
+                <tr>
+                    <td>🥉 Бронза</td>
+                    <td>10</td>
+                    <td>—</td>
+                    <td>1.2×</td>
+                    <td>12%</td>
+                </tr>
+                <tr>
+                    <td>🥈 Серебро</td>
+                    <td>50</td>
+                    <td>100 000₽</td>
+                    <td>1.5×</td>
+                    <td>15%</td>
+                </tr>
+                <tr>
+                    <td>🥇 Золото</td>
+                    <td>200</td>
+                    <td>500 000₽</td>
+                    <td>2.0×</td>
+                    <td>20%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>🛒 Клиент 3 уровня (Конечный покупатель)</h3>
+    <p><strong>Критерий ранга:</strong> Личная история покупок (без сетевой активности)</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ранг</th>
+                    <th>Покупок за период</th>
+                    <th>Скидка</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>🟢 Покупатель</td>
+                    <td>1</td>
+                    <td>10%</td>
+                </tr>
+                <tr>
+                    <td>💎 Постоянный</td>
+                    <td>5 за 3 мес.</td>
+                    <td>12%</td>
+                </tr>
+                <tr>
+                    <td>👑 VIP</td>
+                    <td>15 за 6 мес.</td>
+                    <td>15%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="info-box">
+        <p><strong>Как пересчитываются ранги:</strong> 1-го числа каждого месяца система автоматически проверяет: набрал ли участник нужный объём за последние 3 месяца. Если нет — ранг автоматически снижается. Это мотивиет не останавливаться.</p>
+    </div>
+
+    <div class="tip">
+        <p><strong>Почему у 2 уровня процент выше, чем у 1:</strong> Реализатор (2 ур.) делает реальную работу — продаёт. Агент (1 ур.) получает процент поменьше, но с <strong>гораздо большего объёма</strong> (со всей сети). Это справедливо и мотивирует обоих.</p>
+    </div>
+
+    <h3>Как можно менять бонусы</h3>
+    <p>Все базовые проценты настраиваются через админ-панель. Это позволяет подкручивать модель в зависимости от реальной юнит-экономики:</p>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Настраиваемый параметр</th>
+                    <th>Текущее значение</th>
+                    <th>Диапазон</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Базовый % 1 ур. (Старт)</td>
+                    <td>8%</td>
+                    <td>5–15%</td>
+                </tr>
+                <tr>
+                    <td>Базовый % 2 ур. (Старт)</td>
+                    <td>10%</td>
+                    <td>5–20%</td>
+                </tr>
+                <tr>
+                    <td>Базовая скидка 3 ур.</td>
+                    <td>10%</td>
+                    <td>5–20%</td>
+                </tr>
+                <tr>
+                    <td>Множитель Бронза</td>
+                    <td>1.2×</td>
+                    <td>1.1–1.5×</td>
+                </tr>
+                <tr>
+                    <td>Множитель Серебро</td>
+                    <td>1.5×</td>
+                    <td>1.3–1.8×</td>
+                </tr>
+                <tr>
+                    <td>Множитель Золото</td>
+                    <td>2.0×</td>
+                    <td>1.5–2.5×</td>
+                </tr>
+                <tr>
+                    <td>Скользящее окно рангов</td>
+                    <td>3 месяца</td>
+                    <td>1–6 месяцев</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 5. ФИНАНСОВАЯ МОДЕЛЬ -->
+<section id="finance">
+    <h2>5. Финансовая модель</h2>
+
+    <h3>Юнит-экономика одной продажи (базовый сценарий — ранг «Старт»)</h3>
+    <p>Давайте посчитаем, сколько денег остаётся у магазина с одной продажи на 2000₽:</p>
+
+    <div class="number-row">
+        <span class="label">Цена продажи</span>
+        <span class="value">2 000₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Себестоимость (закупка)</span>
+        <span class="value">-800₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Бонус 1 ур. (Старт, 8%)</span>
+        <span class="value">-160₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Бонус 2 ур. (Старт, 10%)</span>
+        <span class="value">-200₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Скидка 3 ур. (10%)</span>
+        <span class="value">-200₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">= Остаток до логистики</span>
+        <span class="value">640₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Логистика</span>
+        <span class="value">-150₽</span>
+    </div>
+    <div class="number-row" style="background: #e8f5e9;">
+        <span class="label"><strong>= Чистая прибыль</strong></span>
+        <span class="value" style="color: #43e97b;"><strong>490₽ (24.5%)</strong></span>
+    </div>
+
+    <div class="info-box">
+        <p><strong>Вывод:</strong> Даже после всех бонусов и скидок магазин сохраняет 24.5% чистой прибыли. Это здоровая модель.</p>
+    </div>
+
+    <hr>
+
+    <h3>Юнит-экономика с рангом «Золото» (максимальные бонусы)</h3>
+    <p>А что, если все участники достигли максимального ранга? Посчитаем:</p>
+
+    <div class="number-row">
+        <span class="label">Цена продажи</span>
+        <span class="value">2 000₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Себестоимость</span>
+        <span class="value">-800₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Бонус 1 ур. (Золото, 15%)</span>
+        <span class="value">-300₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Бонус 2 ур. (Золото, 20%)</span>
+        <span class="value">-400₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Скидка 3 ур. (VIP, 15%)</span>
+        <span class="value">-300₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">= Остаток до логистики</span>
+        <span class="value">200₽</span>
+    </div>
+    <div class="number-row">
+        <span class="label">− Логистика</span>
+        <span class="value">-150₽</span>
+    </div>
+    <div class="number-row" style="background: #fff3e0;">
+        <span class="label"><strong>= Чистая прибыль</strong></span>
+        <span class="value" style="color: #f5576c;"><strong>50₽ (2.5%)</strong></span>
+    </div>
+
+    <div class="tip">
+        <p><strong>Что это значит:</strong> Даже при максимальных бонусах модель остаётся рентабельной, хотя маржа падает до 2.5%. На практике средний ранг будет значительно ниже «Золота» → реальная средняя маржа будет 15-20%.</p>
+    </div>
+</section>
+
+<!-- 6. МЕХАНИКА ПРОМОКОДОВ -->
+<section id="promo">
+    <h2>6. Механика промокодов</h2>
+
+    <p>Промокод — это <strong>сердце системы</strong>. Это уникальный идентификатор, который привязывается к аккаунту клиента 1 уровня и связывает всю цепочку продаж.</p>
+
+    <h3>Жизненный цикл промокода</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Шаг</th>
+                    <th>Что происходит</th>
+                    <th>Кто делает</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Агент регистрируется → получает уникальный промокод (AGENT-123) и QR-код</td>
+                    <td>Система</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Агент передаёт промокод реализатору (через визитку, QR-код, ссылку)</td>
+                    <td>Агент</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Реализатор регистрируется по промокоду → автоматически привязан к сети агента</td>
+                    <td>Реализатор</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Реализатор передаёт тот же промокод покупателю</td>
+                    <td>Реализатор</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Покупатель покупает на сайте → промокод привязан к заказу</td>
+                    <td>Покупатель</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Система начисляет бонусы по цепочке: агенту, реализатору, скидку покупателю</td>
+                    <td>Система</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Правила промокодов</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Правило</th>
+                    <th>Описание</th>
+                    <th>Зачем</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Один промокод = один агент</td>
+                    <td>Промокод уникален, не может принадлежать двум агентам</td>
+                    <td>Исключить путаницу в цепочках</td>
+                </tr>
+                <tr>
+                    <td>Регистрация только по промокоду</td>
+                    <td>Без промокода — можно купить, но не как участник сети</td>
+                    <td>Контроль сети</td>
+                </tr>
+                <tr>
+                    <td>Многократное применение</td>
+                    <td>Один промокод может использовать множество покупателей</td>
+                    <td>Рост сети</td>
+                </tr>
+                <tr>
+                    <td>QR-код = промокод</td>
+                    <td>Для печати на визитках, упаковках, буклетах</td>
+                    <td>Удобство офлайн-продаж</td>
+                </tr>
+                <tr>
+                    <td>Деактивация неактивных</td>
+                    <td>Если агент 3 месяца без активности — промокод деактивируется</td>
+                    <td>Очистка системы</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Пример применения</h3>
+    <div class="info-box">
+        <p><strong>Покупатель Иван</strong> (3 ур.) использует промокод <code>AGENT-123</code> и покупает товар на <strong>3 000₽</strong>.</p>
+        <p><strong>Результат:</strong></p>
+        <ul class="feature-list">
+            <li>Агент (1 ур., ранг «Старт»): получает <strong>240₽</strong> (8%)</li>
+            <li>Реализатор (2 ур., ранг «Старт»): получает <strong>300₽</strong> (10%)</li>
+            <li>Иван (3 ур.): получает <strong>скидку 300₽</strong> (платит 2 700₽ вместо 3 000₽)</li>
+        </ul>
+    </div>
+</section>
+
+<!-- 7. МЕХАНИКА ВОЗВРАТОВ -->
+<section id="returns">
+    <h2>7. Механика возвратов</h2>
+
+    <p>Косметика и БАДы по закону РФ — <strong>невозвратные товары</strong> после передачи покупателю. Единственное исключение — брак, обнаруженный в момент передачи.</p>
+
+    <h3>Как обрабатываются возвраты</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Этап</th>
+                    <th>Что происходит</th>
+                    <th>Когда</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Покупатель обнаружил брак при получении → может отказаться от товара</td>
+                    <td>Момент передачи</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Возврат в системе: заказ помечается как «возврат». Бонусы не начисляются.</td>
+                    <td>Сразу</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Если бонусы ужё начислены: все транзакции откатываются в обратном порядке</td>
+                    <td>В течение 7-14 дней</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Задержка выплат 7-14 дней: это даёт время на возвраты без откатов</td>
+                    <td>Постоянно</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Пример отката транзакций</h3>
+
+    <div class="info-box">
+        <p><strong>Исходная продажа:</strong> 2 000₽</p>
+        <p>Бонусы начислены:</p>
+        <ul class="feature-list">
+            <li>1 ур. (агент): 160₽</li>
+            <li>2 ур. (реализатор): 200₽</li>
+        </ul>
+        <hr>
+        <p><strong>Возврат через 3 дня:</strong></p>
+        <ul class="feature-list">
+            <li>200₽ <strong>снимается</strong> со счёта 2 ур.</li>
+            <li>160₽ <strong>снимается</strong> со счёта 1 ур.</li>
+            <li>2 000₽ <strong>возвращается</strong> покупателю (или не списывается, если оплата при получении)</li>
+        </ul>
+    </div>
+
+    <div class="tip">
+        <p><strong>Почему задержка выплат решает проблему:</strong> Бонусы выплачиваются не сразу, а через 7-14 дней. За это время 99% возвратов (по браку) уже будут обработаны. Реальные откаты нужны будут только в редких случаях.</p>
+    </div>
+</section>
+
+<!-- 8. ЮРИДИЧЕСКАЯ МОДЕЛЬ -->
+<section id="legal">
+    <h2>8. Юридическая модель</h2>
+
+    <h3>Формы сотрудничества</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Форма</th>
+                    <th>Для кого</th>
+                    <th>Налог</th>
+                    <th>Лимит</th>
+                    <th>Плюсы</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Самозанятый (НПД)</strong></td>
+                    <td>Клиенты 1 и 2 ур.</td>
+                    <td>4-6%</td>
+                    <td>2.4 млн ₽/год</td>
+                    <td>Простая регистрация через приложение «Мой налог»</td>
+                </tr>
+                <tr>
+                    <td><strong>ИП (УСН 6%)</strong></td>
+                    <td>Крупные агенты</td>
+                    <td>6%</td>
+                    <td>200 млн ₽/год</td>
+                    <td>Выше лимит, официальные выплаты</td>
+                </tr>
+                <tr>
+                    <td><strong>Физлицо (13% НДФЛ)</strong></td>
+                    <td>Разовые продажи</td>
+                    <td>13%</td>
+                    <td>Нет</td>
+                    <td>Без регистрации, но сложно для регулярных выплат</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="info-box">
+        <p><strong>Рекомендация:</strong> Основная форма — самозанятость (покрывает 90% случаев). Для крупных агентов при превышении лимита — ИП. Разовые выплаты физлицам — только для тестирования до регистрации.</p>
+    </div>
+
+    <h3>Оферта: что должно быть</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Раздел оферты</th>
+                    <th>Что регулирует</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Условия начисления бонусов</td>
+                    <td>Формула, сроки, порядок расчёта</td>
+                </tr>
+                <tr>
+                    <td>Возвраты и откаты</td>
+                    <td>Механика возврата, задержка выплат, откат транзакций</td>
+                </tr>
+                <tr>
+                    <td>Ранговая система</td>
+                    <td>Условия роста и понижения рангов</td>
+                </tr>
+                <tr>
+                    <td>Ответственность сторон</td>
+                    <td>Кто за что отвечает</td>
+                </tr>
+                <tr>
+                    <td>Конфиденциальность</td>
+                    <td>Защита персональных данных</td>
+                </tr>
+                <tr>
+                    <td>Прекращение сотрудничества</td>
+                    <td>Как выйти из программы, что происходит с бонусами</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Юридический статус модели</h3>
+    <p>MLM (multilevel marketing) <strong>легален в РФ</strong> при наличии:</p>
+    <ul class="feature-list">
+        <li>Реального товара (это не финансовая пирамида)</li>
+        <li>Прозрачных условий (оферта на сайте)</li>
+        <li>Договорных отношений (оферта = договор присоединения)</li>
+    </ul>
+
+    <div class="tip">
+        <p><strong>Важно:</strong> Необходимо проконсультироваться с юристом, специализирующимся на MLM/сетевом маркетинге. Это критически важный шаг до запуска.</p>
+    </div>
+</section>
+
+<!-- 9. АДМИНИСТРИРОВАНИЕ -->
+<section id="admin">
+    <h2>9. Администрирование</h2>
+
+    <p>Админ-панель — это «пульт управления» всем сервисом. Через неё вы будете настраивать бонусы, видеть продажи, управлять пользователями и формировать выплаты.</p>
+
+    <h3>Основные разделы админки</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Раздел</th>
+                    <th>Что можно делать</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>💰 Бонусы</strong></td>
+                    <td>Настраивать базовые %, множители рангов, задержку выплат (7-14 дней)</td>
+                </tr>
+                <tr>
+                    <td><strong>🏆 Ранги</strong></td>
+                    <td>Настраивать условия перехода между рангами, периоды пересчёта, уведомления</td>
+                </tr>
+                <tr>
+                    <td><strong>👥 Пользователи</strong></td>
+                    <td>Просматривать профили, сети, ранги, балансы, историю продаж</td>
+                </tr>
+                <tr>
+                    <td><strong>🛒 Заказы</strong></td>
+                    <td>Видеть цепочки продаж, применяемые промокоды, статус доставки</td>
+                </tr>
+                <tr>
+                    <td><strong>📦 Товары</strong></td>
+                    <td>Управлять каталогом, ценами, наличием, категориями</td>
+                </tr>
+                <tr>
+                    <td><strong>🏷️ Категории</strong></td>
+                    <td>Разделять витрину: косметика / БАДы</td>
+                </tr>
+                <tr>
+                    <td><strong>💳 Выплаты</strong></td>
+                    <td>Формировать реестры выплат, отслеживать статус, экспорт для бухгалтерии</td>
+                </tr>
+                <tr>
+                    <td><strong>📊 Аналитика</strong></td>
+                    <td>Воронка продаж, LTV, конверсии, топ-агенты, динамика сети</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Роли администраторов</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Роль</th>
+                    <th>Доступ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>🔴 Супер-админ</strong></td>
+                    <td>Полный доступ ко всему</td>
+                </tr>
+                <tr>
+                    <td><strong>🟡 Менеджер</strong></td>
+                    <td>Заказы, пользователи, выплаты. Без настройки бонусов.</td>
+                </tr>
+                <tr>
+                    <td><strong>🟢 Аналитик</strong></td>
+                    <td>Аналитика, отчёты. Без изменения данных.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 10. МАРКЕТИНГ И МОТИВАЦИЯ -->
+<section id="marketing">
+    <h2>10. Маркетинг и мотивация</h2>
+
+    <h3>Маркетинговые материалы для агентов</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Материал</th>
+                    <th>Где доступен</th>
+                    <th>Формат</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>PDF-презентация программы</td>
+                    <td>Личный кабинет</td>
+                    <td>PDF</td>
+                </tr>
+                <tr>
+                    <td>Видео-обучение (3-5 роликов)</td>
+                    <td>Личный кабинет, YouTube</td>
+                    <td>Видео</td>
+                </tr>
+                <tr>
+                    <td>Готовые посты для соцсетей</td>
+                    <td>Личный кабинет</td>
+                    <td>Текст + изображение</td>
+                </tr>
+                <tr>
+                    <td>Промокод + QR-код (для печати)</td>
+                    <td>Личный кабинет</td>
+                    <td>PDF, PNG</td>
+                </tr>
+                <tr>
+                    <td>Каталог товаров</td>
+                    <td>Сайт, личный кабинет</td>
+                    <td>PDF, онлайн</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Геймификация</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Механика</th>
+                    <th>Как работает</th>
+                    <th>Зачем</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Прогресс-бар ранга</td>
+                    <td>Показывает, сколько осталось до следующего ранга</td>
+                    <td>Мотивация двигаться вперёд</td>
+                </tr>
+                <tr>
+                    <td>Лидерборд</td>
+                    <td>Топ агентов/реализаторов за месяц</td>
+                    <td>Азарт, соревнование</td>
+                </tr>
+                <tr>
+                    <td>Значки/бейджи</td>
+                    <td>За достижения (первый клиент, 10 продаж и т.д.)</td>
+                    <td>Визуальное признание</td>
+                </tr>
+                <tr>
+                    <td>Уведомления о ранге</td>
+                    <td>SMS/email при повышении</td>
+                    <td>Позитивное подтверждение</td>
+                </tr>
+                <tr>
+                    <td>Бонус за быстрый старт</td>
+                    <td>Повышенный бонус в первый месяц</td>
+                    <td>Быстрая мотивация с самого начала</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 11-12. СИЛЬНЫЕ И СЛАБЫЕ СТОРОНЫ -->
+<section id="risks">
+    <h2>11–12. Сильные стороны, слабые стороны и риски</h2>
+
+    <h3>✅ Сильные стороны</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Преимущество</th>
+                    <th>Почему это важно</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Виральный рост</td>
+                    <td>Каждый участник = бесплатный продавец. Сеть растёт без затрат на рекламу</td>
+                </tr>
+                <tr>
+                    <td>Низкий порог входа</td>
+                    <td>Стать агентом — только регистрация. Не нужен склад, опыт, стартовый капитал</td>
+                </tr>
+                <tr>
+                    <td>Гибкость ценообразования</td>
+                    <td>Настраиваемые бонусы через админку → адаптация к рынку</td>
+                </tr>
+                <tr>
+                    <td>Headless CMS + микросервисы</td>
+                    <td>Масштабируемость, лёгкие обновления, разделение ответственности</td>
+                </tr>
+                <tr>
+                    <td>Прозрачная ранговая система</td>
+                    <td>Понятные правила → доверие → больше активность</td>
+                </tr>
+                <tr>
+                    <td>Задержка выплат + откат</td>
+                    <td>Снижение риска возвратов без потери мотивации</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>⚠️ Риски и слабые стороны</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Риск</th>
+                    <th>Вероятность</th>
+                    <th>Влияние</th>
+                    <th>Меры снижения</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Юридические претензии (MLM)</td>
+                    <td>Средняя</td>
+                    <td>Высокое</td>
+                    <td>Консультация юриста, чёткая оферта, реальный товар</td>
+                </tr>
+                <tr>
+                    <td>Промокод-фрод (подделка, передача)</td>
+                    <td>Средняя</td>
+                    <td>Среднее</td>
+                    <td>Привязка к аккаунту, QR-код, блокировка подозрительных цепочек</td>
+                </tr>
+                <tr>
+                    <td>Падение маржи при росте сети</td>
+                    <td>Низкая</td>
+                    <td>Среднее</td>
+                    <td>Настраиваемые бонусы, контроль через админку</td>
+                </tr>
+                <tr>
+                    <td>Низкое качество товаров</td>
+                    <td>Средняя</td>
+                    <td>Высокое</td>
+                    <td>Сертификация, отзывы на сайте, возвраты по браку</td>
+                </tr>
+                <tr>
+                    <td>Недоверие к MLM-модели</td>
+                    <td>Средняя</td>
+                    <td>Среднее</td>
+                    <td>Прозрачность, реальные отзывы, поддержка</td>
+                </tr>
+                <tr>
+                    <td>Зависимость от 1-2 крупных агентов</td>
+                    <td>Средняя</td>
+                    <td>Высокое</td>
+                    <td>Диверсификация сети, контроль концентрации</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 13. ОТКРЫТЫЕ ВОПРОСЫ -->
+<section id="questions">
+    <h2>13. Открытые вопросы</h2>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Вопрос</th>
+                    <th>Статус</th>
+                    <th>Кто решает</th>
+                    <th>Когда</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Финальная юридическая формулировка оферты</td>
+                    <td>🔴 Не решено</td>
+                    <td>Юрист</td>
+                    <td>До запуска</td>
+                </tr>
+                <tr>
+                    <td>Интеграция с платёжной системой (ЮKassa, СБП)</td>
+                    <td>🔴 Не решено</td>
+                    <td>Разработчик + бизнес</td>
+                    <td>При проектировании</td>
+                </tr>
+                <tr>
+                    <td>Логистика (склад, доставка, возвраты)</td>
+                    <td>🔴 Не решено</td>
+                    <td>Бизнес</td>
+                    <td>До запуска</td>
+                </tr>
+                <tr>
+                    <td>Сертификаты товаров</td>
+                    <td>🔴 Не решено</td>
+                    <td>Бизнес</td>
+                    <td>До запуска</td>
+                </tr>
+                <tr>
+                    <td>Выбор headless CMS (Strapi, Directus, Custom)</td>
+                    <td>🔴 Не решено</td>
+                    <td>Архитектор</td>
+                    <td>Следующий этап</td>
+                </tr>
+                <tr>
+                    <td>Выбор стека фронтенда (Next.js, React, Vue)</td>
+                    <td>🔴 Не решено</td>
+                    <td>Архитектор</td>
+                    <td>Следующий этап</td>
+                </tr>
+                <tr>
+                    <td>Выбор хостинга (Vercel, Railway, свой сервер)</td>
+                    <td>🔴 Не решено</td>
+                    <td>Архитектор</td>
+                    <td>Следующий этап</td>
+                </tr>
+                <tr>
+                    <td>Маркетинговые материалы — кто делает</td>
+                    <td>🔴 Не решено</td>
+                    <td>Бизнес</td>
+                    <td>До запуска</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 14. ЗОНЫ ОТВЕТСТВЕННОСТИ -->
+<section id="responsibility">
+    <h2>14. Зоны ответственности</h2>
+
+    <h3>Бизнес (владелец проекта)</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Задача</th>
+                    <th>Ответственный</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Поставка товаров, работа с поставщиками</td><td>Бизнес</td></tr>
+                <tr><td>Юридическая оферта, консультации</td><td>Юрист + Бизнес</td></tr>
+                <tr><td>Маркетинговые материалы (PDF, видео)</td><td>Бизнес</td></tr>
+                <tr><td>Ценообразование, маржа</td><td>Бизнес</td></tr>
+                <tr><td>Настройка бонусов через админку</td><td>Бизнес (менеджер)</td></tr>
+                <tr><td>Логистика, склад</td><td>Бизнес</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>Техническая команда</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Задача</th>
+                    <th>Ответственный</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Проектирование архитектуры</td><td>Архитектор</td></tr>
+                <tr><td>Разработка фронтенда</td><td>Фронтенд-разработчик</td></tr>
+                <tr><td>Разработка бэкенда (микросервисы)</td><td>Бэкенд-разработчик</td></tr>
+                <tr><td>Настройка headless CMS</td><td>CMS-специалист</td></tr>
+                <tr><td>Интеграция платежей</td><td>Разработчик</td></tr>
+                <tr><td>Тестирование</td><td>Тестировщик (или автотесты)</td></tr>
+                <tr><td>Деплой, мониторинг</td><td>DevOps / архитектор</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>ИИ-ассистент (Qwen Code)</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Задача</th>
+                    <th>Как помогает</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Проектирование архитектуры</td><td>Генерирует схемы, выбирает технологии</td></tr>
+                <tr><td>Написание кода</td><td>Пишет, объясняет, комментирует</td></tr>
+                <tr><td>Создание документации</td><td>Пишет README, описания API</td></tr>
+                <tr><td>Обучение</td><td>Объясняет концепции, задаёт домашние задания</td></tr>
+                <tr><td>Проверка готовности</td><td>Тестирование, код-ревью</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- 15. БЮДЖЕТ -->
+<section id="budget">
+    <h2>15. Бюджет и ресурсы</h2>
+
+    <h3>Базовые расходы (на старте)</h3>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Расход</th>
+                    <th>Сумма</th>
+                    <th>Период</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Домен (.ru)</td>
+                    <td>200–500₽</td>
+                    <td>Год</td>
+                </tr>
+                <tr>
+                    <td>Хостинг (Vercel/Netlify)</td>
+                    <td>0₽</td>
+                    <td>Бесплатно на старте</td>
+                </tr>
+                <tr>
+                    <td>Headless CMS (Strapi self-hosted)</td>
+                    <td>0₽</td>
+                    <td>Бесплатно</td>
+                </tr>
+                <tr>
+                    <td>База данных (Supabase/Neon)</td>
+                    <td>0₽</td>
+                    <td>Бесплатный тариф</td>
+                </tr>
+                <tr>
+                    <td>Платёжная система (ЮKassa)</td>
+                    <td>2.8% + 3₽/транзакция</td>
+                    <td>С продаж</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="info-box">
+        <p><strong>Резервный бюджет:</strong> $1000 (неприкосновенный запас). Может пойти на: юр. консультацию, платный хостинг, рекламу. Прогноз расходов на старте: 5–15$.</p>
+    </div>
+</section>
+
+<!-- 16. ДОРОЖНАЯ КАРТА -->
+<section id="roadmap">
+    <h2>16. Дорожная карта реализации</h2>
+
+    <h3>Фаза 1: Подготовка (2-4 недели)</h3>
+    <ul class="feature-list checklist">
+        <li>Юридическая оферта (консультация)</li>
+        <li>Выбор и регистрация CMS</li>
+        <li>Настройка базы данных</li>
+        <li>Регистрация домена, хостинга</li>
+    </ul>
+
+    <h3>Фаза 2: Разработка MVP (4-8 недель)</h3>
+    <ul class="feature-list checklist">
+        <li>Каталог товаров (косметика + БАДы)</li>
+        <li>Регистрация пользователей + промокоды</li>
+        <li>Корзина и оформление заказа</li>
+        <li>Личный кабинет (3 уровня)</li>
+        <li>Система рангов (начисление, пересчёт)</li>
+        <li>Начисление бонусов</li>
+    </ul>
+
+    <h3>Фаза 3: Интеграции (2-4 недели)</h3>
+    <ul class="feature-list checklist">
+        <li>Платёжная система (ЮKassa, СБП)</li>
+        <li>Интеграция с доставкой (СДЭК, Почта)</li>
+        <li>Интеграция с банком (выплаты самозанятым)</li>
+    </ul>
+
+    <h3>Фаза 4: Тестирование и запуск (2-4 недели)</h3>
+    <ul class="feature-list checklist">
+        <li>Тестирование全流程 (заказ → бонусы → выплаты)</li>
+        <li>Наполнение маркетинговыми материалами</li>
+        <li>Загрузка каталога товаров</li>
+        <li>Первые 10 агентов (ручной набор)</li>
+    </ul>
+
+    <h3>Фаза 5: Масштабирование</h3>
+    <ul class="feature-list checklist">
+        <li>Аналитика и оптимизация бонусов</li>
+        <li>Расширение ассортимента</li>
+        <li>Маркетинг и привлечение</li>
+    </ul>
+</section>
+
+<!-- ПОДВАЛ -->
+<footer>
+    <p><strong>Multi-Level E-Commerce Platform</strong> — Бизнес-модель</p>
+    <p>Документ создан: 25 мая 2026 г. | Версия 1.0 | Qwen Code (бизнес-аналитик)</p>
+</footer>
+
+</div>
+
+</body>
+</html>

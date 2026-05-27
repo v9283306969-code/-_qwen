@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вопросы архитектору — Multi-Level E-Commerce Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; color: #333; line-height: 1.7; }
+        nav { background: #0f3460; padding: 15px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        nav h1 { color: #fff; font-size: 1.3em; margin-bottom: 8px; }
+        nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+        nav ul li a { color: #a8c0e0; text-decoration: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8em; transition: all 0.2s; }
+        nav ul li a:hover { background: #16213e; color: #fff; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #0f3460 0%, #533483 100%); color: white; padding: 40px 30px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 20px rgba(15,52,96,0.3); }
+        .header h1 { font-size: 2em; margin-bottom: 10px; }
+        .header .meta { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px; font-size: 0.9em; opacity: 0.9; }
+        .header .meta span { background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 20px; }
+        section { background: #fff; border-radius: 12px; padding: 30px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        section h2 { color: #0f3460; font-size: 1.5em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 3px solid #533483; }
+        section h3 { color: #533483; font-size: 1.2em; margin: 20px 0 10px 0; }
+        section p { margin-bottom: 12px; text-align: justify; }
+        .table-wrapper { overflow-x: auto; margin: 15px 0; border-radius: 8px; box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; background: #fff; }
+        thead { background: #0f3460; color: #fff; }
+        th { padding: 12px 15px; text-align: left; font-weight: 600; white-space: nowrap; }
+        td { padding: 10px 15px; border-bottom: 1px solid #e8e8e8; }
+        tbody tr:hover { background: #f8f9fa; }
+        tbody tr:nth-child(even) { background: #fafafa; }
+        tbody tr:nth-child(even):hover { background: #f0f1f3; }
+        .tech-badge { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85em; margin: 3px; font-weight: bold; }
+        .tip { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); border-left: 4px solid #f5576c; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 15px 0; }
+        .tip strong { color: #f5576c; }
+        .info-box { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-left: 4px solid #0f3460; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 15px 0; }
+        .info-box strong { color: #0f3460; }
+        .warning-box { background: linear-gradient(135deg, #ffe0e0 0%, #ffc3c3 100%); border-left: 4px solid #e53e3e; padding: 15px 20px; border-radius: 0 8px 8px 0; margin: 15px 0; }
+        .warning-box strong { color: #e53e3e; }
+        .alt-box { background: #fff3cd; border-left: 3px solid #f59e0b; padding: 12px 15px; border-radius: 0 6px 6px 0; margin: 10px 0; }
+        .alt-box strong { color: #d97706; }
+        .qa-block { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px 20px; margin: 15px 0; }
+        .qa-block:hover { border-color: #533483; }
+        .qa-q { color: #0f3460; font-weight: bold; font-size: 1.05em; margin-bottom: 8px; }
+        .qa-num { display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; width: 26px; height: 26px; border-radius: 50%; text-align: center; line-height: 26px; font-size: 0.8em; margin-right: 8px; }
+        .qa-a { margin-top: 6px; padding-left: 34px; }
+        .qa-a p { margin-bottom: 8px; }
+        .qa-a ul { margin: 8px 0 8px 18px; }
+        .qa-a ul li { margin-bottom: 4px; }
+        footer { text-align: center; padding: 30px 20px; color: #666; border-top: 1px solid #e0e0e0; margin-top: 20px; }
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5em; }
+            section { padding: 20px; }
+            th, td { font-size: 0.85em; padding: 8px 10px; }
+            .qa-a { padding-left: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h1>Вопросы архитектору</h1>
+    <ul>
+        <li><a href="#s1">Архитектура</a></li>
+        <li><a href="#s2">Стек</a></li>
+        <li><a href="#s3">Данные</a></li>
+        <li><a href="#s4">API</a></li>
+        <li><a href="#s5">Безопасность</a></li>
+        <li><a href="#s6">Перфоманс</a></li>
+        <li><a href="#s7">Масштабирование</a></li>
+        <li><a href="#s8">Деплой</a></li>
+        <li><a href="#s9">Стоимость</a></li>
+        <li><a href="#s10">Тесты</a></li>
+        <li><a href="#s11">Мониторинг</a></li>
+        <li><a href="#s12">Процессы</a></li>
+        <li><a href="#s13">Бизнес-риски</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+<div class="header">
+    <h1>Вопросы, которые competent-специалист задаёт архитектору</h1>
+    <p>Multi-Level E-Commerce Platform — каталог вопросов и ответов для проработки архитектурных решений</p>
+    <div class="meta">
+        <span>25 мая 2026</span>
+        <span>Версия 1.0</span>
+        <span>50 вопросов</span>
+    </div>
+</div>
+
+<div class="info-box">
+    <p><strong>Как пользоваться:</strong> Это живой документ. Каждый вопрос имеет ответ и (при необходимости) анализ альтернатив. Если решение спорное — появится желтый блок «Альтернативы». Дополняйте по мере поступления новых вопросов.</p>
+</div>
+
+<!-- СЕКЦИЯ 1: ОБЩАЯ АРХИТЕКТУРА -->
+<section id="s1">
+    <h2>1. Общая архитектура (Q1–Q6)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">1</span>Почему микросервисы, а не монолит?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Микросервисы выбраны потому что у нас сложная партнёрская логика (3 уровня, ранги, бонусы), разные категории товаров и независимые команды (каталог vs заказы vs партнёрка). Каждый сервис масштабируется отдельно и не ломает остальные.</p>
+            <div class="alt-box">
+                <strong>Альтернатива:</strong> Модульный монолит (NestJS с модулями) — дешевле и проще на старте. Если команда 1–2 человека на первые 3 месяца — монолит имеет смысл. Переход к микросервисам тогда будет рефакторингом.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">2</span>Где проходит граница между микросервисами?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> По доменам бизнеса: товары, заказы, партнёрка, выплаты, уведомления. Принцип: один сервис = одна бизнес-сущность + её данные.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">3</span>Зачем API Gateway вместо прямого доступа к сервисам?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> API Gateway (GraphQL) — единая точка входа. Клиент не знает, сколько сервисов за ним. Gateway агрегирует данные, кэширует, ограничивает запросы (rate limit), авторизует.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">4</span>Синхронные (HTTP) или асинхронные (очередь) вызовы между сервисами?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> На MVP — синхронные REST-вызовы. Проще в отладке, не нужна отдельная инфраструктура очередей.</p>
+            <p>Асинхронно (через Redis Streams / BullMQ) — только для:</p>
+            <ul>
+                <li>Отправки уведомлений (email/SMS)</li>
+                <li>Пересчёта рангов (фоновая задача)</li>
+            </ul>
+            <div class="alt-box">
+                <strong>Альтернатива:</strong> RabbitMQ / Kafka сразу. Излишне для MVP — требует инфраструктуры, мониторинга, dead letter handling. Добавляем при реальных проблемах.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">5</span>Почему Headless CMS, а не классическая CMS?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Классическая CMS (WordPress, Bitrix) привязана к фронтенду, сложнее кастомизировать партнёрский кабинет, тяжелее масштабировать. Headless CMS даёт только контент через API, фронтенд — полностью наш (Next.js).</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">6</span>Что происходит, если микросервис упал?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Несколько уровней защиты:</p>
+            <ul>
+                <li><strong>Circuit breaker</strong> — если сервис не отвечает N раз, прекращаем попытки и возвращаем fallback</li>
+                <li><strong>Корзина в Redis</strong> — не зависит от сервиса заказов</li>
+                <li><strong>Кэш каталога</strong> — даже если сервис товаров упал, пользователи видят закешированные товары</li>
+                <li><strong>Graceful degradation</strong> — если не загрузились похожие товары, страница всё равно работает</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 2: СТЕК -->
+<section id="s2">
+    <h2>2. Стек технологий (Q7–Q12)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">7</span>TypeScript на бэкенде и фронтенде — это преимущество или риск?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Единый стек (Node.js + TS) — преимущество при небольшой команде: один язык, один линтер, переиспользование типов между фронта и бэкенда.</p>
+            <p><strong>Риск:</strong> TypeScript не серебряная пуля. Нужно строго следить за strict mode, noImplicitAny, и использовать Zod для валидации входящих данных на runtime.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">8</span>Почему NestJS, а не Express или Fastify?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> NestJS предоставляет модульную архитектуру из коробки, валидацию через Pipes, Guards для авторизации, Interceptors для логирования. Express слишком низкоуровневый. Fastify быстрее, но NestJS работает на Fastify под капотом.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">9</span>Drizzle ORM или Prisma — почему Drizzle?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Drizzle — легче (7kb vs 500kb у Prisma), быстрее (ближе к нативному SQL), типобезопасная. Скорость работы сервисов приоритетнее для мобильной аудитории.</p>
+            <div class="alt-box">
+                <strong>Почему не Prisma:</strong> Prisma даёт более высокий уровень абстракции и проще для новичка. Но при работе с ИИ-ассистентом (который знает оба ORM) преимущества Prisma нивелируются — Drizzle проще понять, потому что ближе к SQL. Миграции в Drizzle — тоже есть (drizzle-kit).
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">10</span>Next.js App Router или Pages Router?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> App Router (React Server Components) — серверный рендеринг более эффективный, меньше JS на клиенте, лучше для мобильных. Pages Router — legacy.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">11</span>Зачем Zustand, а не Redux?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Zustand — 10 строк для store, нет провайдеров, работает с React Server Components. Для e-commerce на старте Redux — overkill.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">12</span>Почему мультиязычная архитектура (Node.js + Python)?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Раньше был выбран единый стек (только Node.js) для простоты. Но при работе с ИИ-ассистентом (Qwen) аргумент «один язык для команды» отпадает — Qwen равно хорошо пишет на обоих.</p>
+            <p><strong>Мультиязычная архитектура:</strong></p>
+            <ul>
+                <li><strong>API Gateway, Product, Order, Payout, Notification</strong> — Node.js + TypeScript (I/O-heavy, SSR, GraphQL)</li>
+                <li><strong>Partner Service</strong> — Python + FastAPI (графовые вычисления, обходы сети, пересчёт рангов)</li>
+                <li><strong>Analytics Service</strong> — Python + FastAPI (pandas, статистика, будущие ML-модели)</li>
+            </ul>
+            <p><strong>Риски:</strong> Два стека зависимостей. Митигация: каждый сервис = отдельный Docker. docker-compose up поднимает всё одной командой.</p>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 3: ДАННЫЕ -->
+<section id="s3">
+    <h2>3. Данные и база данных (Q13–Q17)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">13</span>PostgreSQL или MongoDB — почему реляционная?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Партнёрская сеть — это граф связей с транзакционными гарантиями. Начисление бонусов, расчёт рангов, реферальные цепочки требуют ACID.</p>
+            <p>MongoDB отлично для каталога товаров, но не для финансовых транзакций.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">14</span>Отдельные БД или общая БД с разными схемами?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> На MVP — общая БД с отдельными схемами (product_service, order_service, partner_service). Это дешевле, проще бекапить, можно мигрировать к отдельным БД позже.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">15</span>Как работаем с миграциями БД?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Drizzle migrate (drizzle-kit). Каждый сервис управляет своей схемой. Правило: миграция — только additive (add column, не drop). Breaking changes — в два этапа.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">16</span>Что произойдёт, если Redis упадёт?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Корзина восстанавливается из БД. Сессии сбрасываются — пользователи перезайдут. Кэш товаров — сервис отвечает напрямую из PostgreSQL.</p>
+            <div class="warning-box">
+                <strong>Внимание:</strong> Redis — single point of failure на MVP. На фазе 2 настраиваем Redis Sentinel или Redis Cluster.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">17</span>Где храним фото и видео товаров?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Strapi Upload Provider -> S3-совместимое хранилище. На старте — локальное хранилище в Docker. На продакшене — Cloudflare R2 (дешевле AWS S3, нет egress-платежей).</p>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 4: API -->
+<section id="s4">
+    <h2>4. API и коммуникация (Q18–Q21)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">18</span>GraphQL сразу или начать с REST и перейти потом?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> GraphQL сразу. Большинство пользователей — с мобильных устройств. Один запрос = все данные для страницы. Нет overfetching/underfetching. Переходить с REST на GraphQL на масштабе — дорого и рискованно.</p>
+            <p>REST остаётся для: внутренней коммуникации между сервисами, вебхуков от внешних систем.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">19</span>Версионирование API — как и когда?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> GraphQL не версионируется — добавляем поля, деприкейтим старые. Breaking changes — через маркировку @deprecated + период совместимости.</p>
+            <p>REST вебхуки — версируются в URL: /webhooks/yookassa/v1.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">20</span>Как сервисы внутри аутентифицируют друг друга?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> На MVP — внутренний JWT-токен, выдаваемый при старте сервиса. Сервисы в одном Docker Compose используют shared secret.</p>
+            <p>На фазе 2–3: mTLS между сервисами или API Gateway с OAuth2/OIDC.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">21</span>Единый формат ошибок или каждый сервис по-своему?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Единый формат для GraphQL: { errors: [{ message, code, path }] }. HTTP-коды стандартные (400, 401, 403, 404, 422, 500). Internal error codes — уникальные с префиксом домена (PARTNER_001, ORDER_002).</p>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 5: БЕЗОПАСНОСТЬ -->
+<section id="s5">
+    <h2>5. Безопасность (Q22–Q25)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">22</span>Как защищены от SQL-инъекций и XSS?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong></p>
+            <ul>
+                <li>Drizzle ORM — параметризированные запросы, SQL-инъекции невозможны на уровне ORM</li>
+                <li>React/Next.js автоматически экранирует XSS</li>
+                <li>Zod для валидации всех входящих данных</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">23</span>JWT или сессии для аутентификации?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Гибрид. Access token (JWT, 15 мин) — в памяти клиента. Refresh token (httpOnly cookie, 30 дней) — в Redis с возможностью отзыва.</p>
+            <div class="alt-box">
+                <strong>Альтернатива:</strong> Чистые сессии в Redis — проще отзывать, но привязывают к состоянию. JWT stateless — лучше для масштабирования.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">24</span>Как соблюдаем PCI DSS?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Не храним платёжные данные вообще. ЮKassa обрабатывает карты, мы получаем только статус оплаты. Это снимает 90% PCI DSS-требований.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">25</span>Как защищены от фрода в партнёрской сети?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Hold-период бонусов (7–14 дней), проверка по IP/устройству (запрет саморефералов), лимит на возвраты (flag для ручной проверки), минимальная сумма вывода бонусов.</p>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 6: ПРОИЗВОДИТЕЛЬНОСТЬ -->
+<section id="s6">
+    <h2>6. Производительность (Q26–Q28)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">26</span>Какой целевой TTFB (Time to First Byte)?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Для SSR-страниц (каталог, товар): менее 200ms. Для API: менее 100ms (p95). Для GraphQL-запросов: менее 150ms.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">27</span>Стратегия кэширования?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Многоуровневое кэширование:</p>
+            <ul>
+                <li><strong>Redis</strong> — кэш ответов API товаров (TTL 5–15 минут)</li>
+                <li><strong>Next.js ISR</strong> — Incremental Static Regeneration (регенерация страницы раз в N минут)</li>
+                <li><strong>CDN (Vercel)</strong> — кэш статики и ISR-страниц</li>
+                <li><strong>Apollo Client</strong> — кэш на мобильном браузере</li>
+            </ul>
+            <p><strong>Инвалидация:</strong> при изменении товара в Strapi -> webhook -> purge Redis-ключа.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">28</span>Оптимистическое обновление корзины — как?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Корзина в Redis. При добавлении товара: 1) Оптимистично обновляем UI (Zustand), 2) Отправляем запрос, 3) При ошибке — откатываем UI, 4) При успехе — подтверждаем.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">29</span>Нативное приложение или сайт (PWA) для мобильных?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Сайт responsive + PWA. Причина: MLM = вирусный рост = минимальное трение. Ссылка → сайт → регистрация = 30 сек. Ссылка → App Store → скачать → регистрация = 2-5 мин, потеря 40-60% конверсии.</p>
+            <p><strong>PWA функционал:</strong> иконка на экране, push-уведомления, офлайн-режим (Service Worker). Настраивается через next-pwa за 2-3 дня.</p>
+            <div class="alt-box">
+                <strong>Когда нативное:</strong> при 10K+ активных пользователей, если нужны AR-примерка, сложный офлайн или push через Safari (ограничен в PWA).
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 7: МАСШТАБИРОВАНИЕ -->
+<section id="s7">
+    <h2>7. Масштабирование (Q29–Q30)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">29</span>Какие сервисы масштабируем первыми?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong></p>
+            <ul>
+                <li><strong>Product Service</strong> — больше всего чтения. Масштабируем горизонтально + Redis.</li>
+                <li><strong>Order Service</strong> — нагрузка на запись при оформлении. Масштабируем + rate limiter.</li>
+                <li><strong>Partner Service</strong> — пересчёт рангов фоновый, не в горячем пути.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">30</span>Docker Compose -> Kubernetes — когда и как?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> При 10 000+ пользователей и когда运维-нагрузка Docker Compose становится проблемой. Плавно: Docker Compose -> Docker Swarm -> Kubernetes.</p>
+            <div class="alt-box">
+                <strong>Альтернатива:</strong> Не переходить на K8s вообще. Использовать управляемые сервисы (Railway, Render), которые масштабируют сами. Экономит сотни часов运维.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 8: РАЗВЁРТЫВАНИЕ -->
+<section id="s8">
+    <h2>8. Развёртывание (Q31–Q34)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">31</span>Как выглядит CI/CD для monorepo?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> GitHub Actions: push в main -> запуск тестов для всех сервисов. Если только сервис X изменён -> деплоим только X (path filter). Frontend -> автодеплой Vercel. Backend -> build Docker -> push GHCR -> deploy Railway.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">32</span>Blue-green или canary деплой?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> На MVP — rolling update (дефолт Railway/Vercel). Canary на фазе 2–3: 10% трафика на новую версию -> мониторинг -> 100%.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">33</span>Где храним секреты (API-ключи, пароли БД)?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> GitHub Secrets для CI/CD. Railway/Vercel environment variables для продакшена. .env.local для локальной разработки (в .gitignore).</p>
+            <div class="warning-box">
+                <strong>Критично:</strong> Автоматический сканер секретов в CI (gitleaks) — блокируем коммиты с accidental secrets.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">34</span>Как работаем с разными средами (dev, staging, prod)?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong></p>
+            <ul>
+                <li><strong>Local:</strong> Docker Compose с пустой PostgreSQL -> drizzle-kit generate -> drizzle-kit migrate -> seed script</li>
+                <li><strong>Dev:</strong> Shared dev-окружение на Railway</li>
+                <li><strong>Staging:</strong> Копия prod, но с тестовыми данными</li>
+                <li><strong>Prod:</strong> Боевая среда</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 9: СТОИМОСТЬ -->
+<section id="s9">
+    <h2>9. Стоимость (Q35–Q36)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">35</span>Какова стоимость на 100 / 1K / 10K пользователей?</div>
+        <div class="qa-a">
+            <table>
+                <thead><tr><th>Метрика</th><th>100 польз.</th><th>1K польз.</th><th>10K польз.</th></tr></thead>
+                <tbody>
+                    <tr><td>Хостинг</td><td>$20/мес (бесплатно)</td><td>$50/мес</td><td>$200/мес</td></tr>
+                    <tr><td>БД</td><td>Бесплатно</td><td>$25/мес</td><td>$100/мес</td></tr>
+                    <tr><td>Redis</td><td>Бесплатно</td><td>$10/мес</td><td>$50/мес</td></tr>
+                    <tr><td>Email</td><td>Бесплатно</td><td>$15/мес</td><td>$50/мес</td></tr>
+                    <tr><td>SMS</td><td>$5/мес</td><td>$30/мес</td><td>$150/мес</td></tr>
+                    <tr><td><strong>Итого</strong></td><td><strong>~$25</strong></td><td><strong>~$130</strong></td><td><strong>~$550</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">36</span>Какие скрытые расходы могут быть?</div>
+        <div class="qa-a">
+            <ul>
+                <li>SMS ~2–3 руб/шт. 10 000 SMS = 20–30 тыс. руб</li>
+                <li>Мониторинг — Sentry Free до 5K ошибок/мес, потом $26/мес</li>
+                <li>Бэкапы — Supabase бесплатно до 7 дней, longer retention платно</li>
+            </ul>
+            <div class="tip">
+                <strong>Совет:</strong> SMS только для критичных уведомлений (сброс пароля, оплата). Остальное — email или push.
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 10: ТЕСТИРОВАНИЕ -->
+<section id="s10">
+    <h2>10. Тестирование (Q37–Q39)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">37</span>Какой набор тестов нужен?</div>
+        <div class="qa-a">
+            <ul>
+                <li><strong>Unit (Jest)</strong> — 70%+ покрытия бизнес-логики (расчёт бонусов, рангов)</li>
+                <li><strong>Интеграционные (Supertest)</strong> — реальная БД, не моки. Проверяем эндпоинты + Drizzle.</li>
+                <li><strong>E2E (Playwright)</strong> — 3–5 критичных сценариев: регистрация -> покупка -> бонусы -> вывод</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">38</span>Как тестируем логику партнёрских бонусов?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Это самая критичная логика. Тестов больше, чем production-кода:</p>
+            <ul>
+                <li>Unit-тесты для каждого расчёта бонусов (каждый ранг, каждый уровень)</li>
+                <li>Интеграционные: заказ -> начисление -> hold -> подтверждение</li>
+                <li>Property-based тесты (fast-check): сумма бонусов <= сумма заказа</li>
+            </ul>
+            <div class="warning-box">
+                <strong>Критично:</strong> Ошибка в расчёте бонусов = финансовые потери. Тесты здесь не опциональны.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">39</span>Как мокаем внешние сервисы?</div>
+        <div class="qa-a">
+            <ul>
+                <li><strong>ЮKassa</strong> — MSW (Mock Service Worker) или nock для мока HTTP</li>
+                <li><strong>СДЭК</strong> — мок с фиктивными статусами доставки</li>
+                <li><strong>Email/SMS</strong> — не отправляем реально, пишем в лог</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 11: МОНИТОРИНГ -->
+<section id="s11">
+    <h2>11. Мониторинг и логирование (Q40–Q42)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">40</span>Как мониторим работоспособность?</div>
+        <div class="qa-a">
+            <ul>
+                <li><strong>Sentry</strong> — отлов ошибок фронтенда и бэкенда. Алерты в Telegram.</li>
+                <li><strong>Health check</strong> — GET /health на каждом сервисе. Railway мониторит автоматически.</li>
+                <li><strong>UptimeRobot</strong> — бесплатно, 50 мониторов, проверка каждые 5 мин.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">41</span>Куда пишем логи?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> JSON-логирование, структурированные логи (winston). Каждый запрос имеет correlationId — можно отследить путь через все сервисы. На MVP — стандартный вывод Docker (Railway показывает). На фазе 2 — ELK-стек или Loki.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">42</span>Какие бизнес-метрики мониторим?</div>
+        <div class="qa-a">
+            <ul>
+                <li>Конверсия визит -> заказ</li>
+                <li>Средний чек</li>
+                <li>Количество регистраций по промокодам в день</li>
+                <li>Сумма начисленных бонусов за день</li>
+                <li>Сумма выплаченных бонусов за неделю</li>
+                <li>Количество возвратов и откатов бонусов</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 12: КОМАНДА И ПРОЦЕССЫ -->
+<section id="s12">
+    <h2>12. Команда и процессы (Q43–Q46)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">43</span>Monorepo или polyrepo?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Monorepo (pnpm + turborepo). Преимущества:</p>
+            <ul>
+                <li>Один PR = изменение во всех сервисах</li>
+                <li>Shared Types — общая библиотека типов</li>
+                <li>Единый CI</li>
+            </ul>
+            <div class="alt-box">
+                <strong>Полирепо:</strong> когда команды независимые и деплоят не синхронно. Для нас на старте — monorepo проще. При росте до 5+ команд — рассмотрим.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">44</span>Kanban или Scrum?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Kanban. Инструмент: GitHub Projects (бесплатно, привязка к issue/PR). Колонки: Backlog -> In Progress -> Review -> Done. Без спринтов для MVP.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">45</span>Чеклист code review?</div>
+        <div class="qa-a">
+            <ul>
+                <li>Логика соответствует ТЗ из бизнес-модели?</li>
+                <li>Тесты написаны и проходят?</li>
+                <li>Нет хардкода секретов?</li>
+                <li>Error handling покрывает edge-cases?</li>
+                <li>Миграции БД additive?</li>
+                <li>Логирование достаточно для отладки?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">46</span>Какую документацию ведём?</div>
+        <div class="qa-a">
+            <ul>
+                <li><strong>Архитектурные решения (ADR)</strong> — почему приняли каждое решение</li>
+                <li><strong>API Docs</strong> — GraphQL Playground в dev</li>
+                <li><strong>Runbooks</strong> — что делать, если сервис X упал</li>
+                <li><strong>README</strong> — каждый сервис: как запустить, как тестировать</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- СЕКЦИЯ 13: БИЗНЕС-РИСКИ -->
+<section id="s13">
+    <h2>13. Бизнес-риски (Q47–Q50)</h2>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">47</span>Юридический риск MLM-модели?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> MLM легален в РФ при наличии реального товара. Но нужно: оферта (юрист), договоры с самозанятыми, прозрачная механика. Без юриста — высокий риск.</p>
+            <div class="warning-box">
+                <strong>Блокирующий риск:</strong> Без юридической консультации не запускать. Это может закрыть весь проект.
+            </div>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">48</span>Vendor lock-in от платёжной системы или хостинга?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Платёжная система — абстрактный интерфейс (IPaymentGateway). Сменить ЮKassa на другую = реализовать тот же интерфейс. Хостинг — Docker, миграция на другой хостинг = docker-compose up.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">49</span>Что если данные партнёрской сети утекут?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Минимизация: не храним больше чем нужно (телефон/email — можно удалить). Шифрование PII в БД (bcrypt для чувствительных полей). Ролевой доступ: аналитик не видит телефоны, только агрегаты.</p>
+        </div>
+    </div>
+
+    <div class="qa-block">
+        <div class="qa-q"><span class="qa-num">50</span>Что если сеть вырастет в 100 раз за месяц?</div>
+        <div class="qa-a">
+            <p><strong>Ответ:</strong> Архитектура готова к горизонтальному масштабированию:</p>
+            <ul>
+                <li>Product Service -> авто-скейлинг на Railway</li>
+                <li>PostgreSQL -> read-реплики</li>
+                <li>Redis -> кластер</li>
+                <li>GraphQL DataLoader предотвращает N+1 запросы</li>
+            </ul>
+            <p>Боттлнек — скорее всего пересчёт рангов (фоновая задача). На 100x — выносим в отдельный сервис с очередью.</p>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p><strong>Вопросы архитектору</strong> — Multi-Level E-Commerce Platform</p>
+    <p>Документ создан: 25 мая 2026 г. | Версия 1.0 | 50 вопросов по 13 категориям</p>
+</footer>
+
+</div>
+</body>
+</html>

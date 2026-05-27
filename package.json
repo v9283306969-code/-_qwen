@@ -1,0 +1,15 @@
+{
+  "name": "mlecp-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Multi-Level E-Commerce Platform (Headless CMS + Microservices + MLM)",
+  "scripts": {
+    "dev": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "clean": "rm -rf node_modules apps/*/node_modules services/*/node_modules packages/*/node_modules"
+  },
+  "packageManager": "pnpm@9.5.0",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
