@@ -1,5 +1,11 @@
 """Scaffold tests — minimal test to pass CI during scaffold phase."""
-from src.main import app
+import sys
+import os
+
+# Add src to path so we can import from it
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+from main import app
 from fastapi.testclient import TestClient
 
 client = TestClient(app)
