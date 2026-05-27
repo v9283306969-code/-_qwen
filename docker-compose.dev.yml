@@ -1,0 +1,62 @@
+# ======================
+# MLECP — Docker Compose (Development)
+# ======================
+# Запуск: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+# Остановка: docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+# ======================
+# Этот файл переопределяет сервисы для режима разработки:
+# - Монтирует исходный код в контейнеры (live-reload)
+# - Включает debug-порты
+# - Отключает production-оптимизации
+# ======================
+
+version: '3.9'
+
+services:
+
+  gateway:
+    volumes:
+      - ./services/gateway/src:/app/src
+      - ./services/gateway/package.json:/app/package.json
+      - ./services/gateway/tsconfig.json:/app/tsconfig.json
+    environment:
+      NODE_ENV: development
+    command: ["npm", "run", "start:dev"]
+    ports:
+      - "4000:${GATEWAY_PORT:-4000}"
+      - "9229:9229" # Node.js debug
+
+  product-service:
+    volumes:
+      - ./services/product-service/src:/app/src
+      - ./services/product-service/package.json:/app/package.json
+      - ./services/product-service/tsconfig.json:/app/tsconfig.json
+    environment:
+      NODE_ENV: development
+    command: ["npm", "run", "start:dev"]
+    ports:
+      - "3001:${PRODUCT_SERVICE_PORT:-3001}"
+      - "9230:9229" # Node.js debug
+
+  order-service:
+    volumes:
+      - ./services/order-service/src:/app/src
+      - ./services/order-service/package.json:/app/package.json
+      - ./services/order-service/tsconfig.json:/app/tsconfig.json
+    environment:
+      NODE_ENV: development
+    command: ["npm", "run", "start:dev"]
+    ports:
+      - "3002:${ORDER_SERVICE_PORT:-3002}"
+      - "9231:9229" # Node.js debug
+
+  partner-service:
+    volumes:
+      - ./services/partner-service/src:/app/src
+      - ./services/partner-service/requirements.txt:/app/requirements.txt
+    environment:
+      PYTHONUNBUFFERED: "1"
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "${PARTNER_SERVICE_PORT:-3003}", "--reload"]
+    ports:
+      - "3003:${PARTNER_SERVICE_PORT:-3003}"
+      - "5678:5678" # Python debug (debugpy)

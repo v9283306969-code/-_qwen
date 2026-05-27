@@ -1,3 +1,10 @@
+# ========================================
+# MLECP — CI/CD Pipeline
+# ========================================
+# Trigger: push/PR в main
+# Stages: lint → type-check → test → security → build → deploy
+# ========================================
+
 name: CI/CD Pipeline
 
 on:
@@ -7,15 +14,18 @@ on:
     branches: [main]
 
 env:
+  NODE_VERSION: 20
+  PYTHON_VERSION: '3.12'
   DATABASE_URL: postgresql://dev:dev@localhost:5432/mlecp_test
   REDIS_URL: redis://localhost:6379
-  JWT_SECRET: test_secret_key
+  JWT_SECRET: ci_test_secret_do_not_use_in_prod
 
 jobs:
   # ==========================
-  # 1. Проверка кода
+  # 1. Линтинг и проверка типов
   # ==========================
   lint-and-type-check:
+    name: Lint & Type Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,17 +33,25 @@ jobs:
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r lint
       - run: pnpm -r type-check
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: pip install ruff mypy
+      - run: ruff check services/partner-service/
+      - run: mypy services/partner-service/src --ignore-missing-imports || true
+
   # ==========================
-  # 2. Тесты (Node.js)
+  # 2. Unit-тесты (Node.js)
   # ==========================
   test-node:
+    name: Test Node.js Services
     needs: lint-and-type-check
     runs-on: ubuntu-latest
     services:
@@ -45,25 +63,47 @@ jobs:
           POSTGRES_DB: mlecp_test
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dev"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
       redis:
         image: redis:7-alpine
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
+
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
-      - run: pnpm -r --filter "services/*" test
+
+      - name: Run tests with coverage
+        run: pnpm -r --filter "services/*" test -- --coverage --coverageReporters=text-summary
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: node-coverage
+          path: '**/coverage/'
+          retention-days: 7
 
   # ==========================
-  # 3. Тесты (Python)
+  # 3. Unit-тесты (Python)
   # ==========================
   test-python:
+    name: Test Python Services
     needs: lint-and-type-check
     runs-on: ubuntu-latest
     services:
@@ -75,30 +115,138 @@ jobs:
           POSTGRES_DB: mlecp_test
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dev"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
       redis:
         image: redis:7-alpine
         ports:
           - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - run: pip install -r services/partner-service/requirements.txt
-      - run: cd services/partner-service && pytest --cov=src
+      - name: Install dependencies
+        working-directory: services/partner-service
+        run: pip install -r requirements.txt pytest pytest-cov pytest-asyncio httpx
+
+      - name: Run tests
+        working-directory: services/partner-service
+        run: pytest --cov=src --cov-report=term-missing
 
   # ==========================
-  # 4. Безопасность
+  # 4. Docker Build Test
+  # ==========================
+  docker-build:
+    name: Docker Build Test
+    needs: [test-node, test-python]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Gateway
+        uses: docker/build-push-action@v5
+        with:
+          context: services/gateway
+          push: false
+          load: true
+          tags: mlecp-gateway:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Product Service
+        uses: docker/build-push-action@v5
+        with:
+          context: services/product-service
+          push: false
+          load: true
+          tags: mlecp-product-service:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Order Service
+        uses: docker/build-push-action@v5
+        with:
+          context: services/order-service
+          push: false
+          load: true
+          tags: mlecp-order-service:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Partner Service
+        uses: docker/build-push-action@v5
+        with:
+          context: services/partner-service
+          push: false
+          load: true
+          tags: mlecp-partner-service:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ==========================
+  # 5. Безопасность
   # ==========================
   security-scan:
+    name: Security Scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Run Gitleaks
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Audit npm
+      - name: Audit npm packages
         run: pnpm audit || true
+
+      - name: Audit pip packages
+        working-directory: services/partner-service
+        run: pip install pip-audit && pip-audit || true
+
+  # ==========================
+  # 6. Deploy (только main, все проверки прошли)
+  # ==========================
+  # Раскомментировать когда сервисы будут готовы к деплою:
+
+  # deploy-frontend:
+  #   name: Deploy Frontend (Vercel)
+  #   needs: [test-node, test-python, security-scan]
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: amondnet/vercel-action@v25
+  #       with:
+  #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
+  #         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+  #         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+  #         working-directory: apps/web
+
+  # deploy-backend:
+  #   name: Deploy Backend (Railway)
+  #   needs: [test-node, test-python, docker-build, security-scan]
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Deploy to Railway
+  #       uses: bervProject/railway-deploy@main
+  #       with:
+  #         railway_token: ${{ secrets.RAILWAY_TOKEN }}
+  #         service: mlecp-gateway

@@ -1,0 +1,9 @@
+node_modules
+.git
+.env*
+Dockerfile
+.dockerignore
+coverage
+.pnpm-store
+dist
+*.md

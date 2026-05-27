@@ -1,6 +1,13 @@
+# ======================
+# MLECP — Docker Compose (Production-like)
+# ======================
+# Запуск: docker-compose up -d
+# Остановка: docker-compose down
+# Очистка volumes: docker-compose down -v
+# ======================
+
 version: '3.9'
 
-# Определение сервисов для локальной разработки
 services:
 
   # ======================
@@ -45,36 +52,52 @@ services:
     networks:
       - mlecp-network
 
-  # Headless CMS (Strapi)
+  # Headless CMS (Strapi) — отдельная БД
   strapi:
     image: node:20-alpine
     container_name: mlecp-strapi
     working_dir: /app
+    # В production заменить на build из папки стрapi-проекта
     command: >
       sh -c "
-        npm install -g @strapi/strapi &&
-        npx create-strapi-app@latest . --quickstart --no-run &&
+        if [ ! -f package.json ]; then
+          npm init -y &&
+          npm install @strapi/strapi@latest &&
+          npx strapi new . --quickstart --no-run;
+        fi &&
         npm run develop
       "
     environment:
+      NODE_ENV: development
       DATABASE_CLIENT: postgres
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
       DATABASE_NAME: strapi
       DATABASE_USERNAME: ${DB_USER:-dev}
       DATABASE_PASSWORD: ${DB_PASS:-dev_password_change_me}
-      JWT_SECRET: ${JWT_SECRET:-change_me_strapi_secret}
-      ADMIN_JWT_SECRET: ${JWT_SECRET:-change_me_strapi_admin_secret}
+      JWT_SECRET: ${JWT_SECRET:-change_me_super_secret_key_123}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-change_me_strapi_admin_secret}
+      APP_KEYS: ${APP_KEYS:-temp_key_1,temp_key_2}
     ports:
       - "1337:1337"
+    volumes:
+      # Монтируем папку strapi для dev-режима (live-reload)
+      - ./services/strapi:/app
+      - strapi_node_modules:/app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:1337/admin || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
     networks:
       - mlecp-network
 
   # ======================
-  # МИКРОСЕРВИСЫ (Stub — пока пустые контейнеры)
+  # МИКРОСЕРВИСЫ
   # ======================
 
   # API Gateway (GraphQL)
@@ -83,74 +106,122 @@ services:
       context: ./services/gateway
       dockerfile: Dockerfile
     container_name: mlecp-gateway
+    restart: unless-stopped
     environment:
+      NODE_ENV: production
       DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
       REDIS_URL: redis://redis:6379
+      GATEWAY_PORT: ${GATEWAY_PORT:-4000}
+      PRODUCT_SERVICE_URL: http://product-service:3001
+      ORDER_SERVICE_URL: http://order-service:3002
+      PARTNER_SERVICE_URL: http://partner-service:3003
+      STRAPI_URL: http://strapi:1337
+      SENTRY_DSN: ${SENTRY_DSN:-}
     ports:
-      - "3000:3000"
-      - "4000:4000" # GraphQL Playground
+      - "4000:${GATEWAY_PORT:-4000}" # GraphQL endpoint
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:${GATEWAY_PORT:-4000}/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - mlecp-network
 
-  # Product Service
+  # Product Service (Node.js + NestJS)
   product-service:
     build:
       context: ./services/product-service
       dockerfile: Dockerfile
     container_name: mlecp-product-service
+    restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}?schema=product
       REDIS_URL: redis://redis:6379
+      SERVICE_PORT: ${PRODUCT_SERVICE_PORT:-3001}
+      SENTRY_DSN: ${SENTRY_DSN:-}
     ports:
-      - "3001:3001"
+      - "3001:${PRODUCT_SERVICE_PORT:-3001}"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:${PRODUCT_SERVICE_PORT:-3001}/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - mlecp-network
 
-  # Order Service
+  # Order Service (Node.js + NestJS)
   order-service:
     build:
       context: ./services/order-service
       dockerfile: Dockerfile
     container_name: mlecp-order-service
+    restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
+      NODE_ENV: production
+      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}?schema=orders
       REDIS_URL: redis://redis:6379
+      SERVICE_PORT: ${ORDER_SERVICE_PORT:-3002}
+      PRODUCT_SERVICE_URL: http://product-service:3001
+      PARTNER_SERVICE_URL: http://partner-service:3003
+      YOOKASSA_SHOP_ID: ${YOOKASSA_SHOP_ID:-}
+      YOOKASSA_SECRET_KEY: ${YOOKASSA_SECRET_KEY:-}
+      YOOKASSA_RETURN_URL: ${YOOKASSA_RETURN_URL:-http://localhost:3000/checkout/success}
+      SENTRY_DSN: ${SENTRY_DSN:-}
     ports:
-      - "3002:3002"
+      - "3002:${ORDER_SERVICE_PORT:-3002}"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:${ORDER_SERVICE_PORT:-3002}/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - mlecp-network
 
-  # Partner Service (Python)
+  # Partner Service (Python + FastAPI)
   partner-service:
     build:
       context: ./services/partner-service
       dockerfile: Dockerfile
     container_name: mlecp-partner-service
+    restart: unless-stopped
     environment:
-      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}
+      DATABASE_URL: postgresql://${DB_USER:-dev}:${DB_PASS:-dev_password_change_me}@postgres:5432/${DB_NAME:-mlecp_dev}?schema=partner
       REDIS_URL: redis://redis:6379
+      SERVICE_PORT: ${PARTNER_SERVICE_PORT:-3003}
+      STRAPI_URL: http://strapi:1337
+      SENTRY_DSN: ${SENTRY_DSN:-}
     ports:
-      - "3003:3003"
+      - "3003:${PARTNER_SERVICE_PORT:-3003}"
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:${PARTNER_SERVICE_PORT:-3003}/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     networks:
       - mlecp-network
 
@@ -160,6 +231,8 @@ services:
 
 volumes:
   pgdata:
+    driver: local
+  strapi_node_modules:
 
 networks:
   mlecp-network:
