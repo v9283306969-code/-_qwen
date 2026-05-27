@@ -104,13 +104,14 @@ docker exec <py-container> python -c "import urllib.request; urllib.request.urlo
 
 ### 8. Strapi v4/v5
 
-Команда `npx strapi new` удалена. `npx create-strapi-app@latest` требует интерактивного ввода (SSO login) и падает в non-TTY.
+Команда `npx strapi new` удалена в v4/v5. `npx create-strapi-app@latest` требует **интерактивного ввода** (SSO login/sign up prompt) и падает в non-TTY Docker-контейнере с ошибкой `npm error code ENOENT`.
 
 **Рабочий подход для scaffold阶段:** Express-заглушка, отвечающая на `/admin` и `/health`:
 
 ```yaml
 strapi:
   image: node:20-alpine
+  working_dir: /app
   command: >
     sh -c "
       npm init -y &&
@@ -120,11 +121,23 @@ strapi:
         a.get('/health',(_,r)=>r.json({status:'ok',service:'strapi-scaffold'}));
         a.listen(1337,()=>console.log('[strapi] Scaffold'))\"
     "
+  ports:
+    - "1337:1337"
   healthcheck:
     test: ["CMD-SHELL", "wget -qO- http://localhost:1337/health || exit 1"]
+    interval: 10s
+    timeout: 5s
+    retries: 10
+    start_period: 30s
 ```
 
-На Этапе с полноценным Strapi — заменить на реальный Strapi-проект.
+**Критично:** на Этапе интеграции Strapi (не scaffold!) нужно:
+1. Удалить Express-заглушку из docker-compose.yml
+2. Инициализировать Strapi: `cd services/strapi && npx create-strapi-app@latest . --quickstart --ts --no-run`
+3. Закоммитить стрapi-проект в `services/strapi/` (может быть большой — .gitignore node_modules)
+4. Вернуть `command: npm run develop` в docker-compose.yml
+
+**Пометка:** добавить `⚠️` предупреждения в docker-compose.yml (TODO comment в сервисе), PROJECT-LIFECYCLE.md (шаг интеграции), SPEC-05 (решения), SPEC-06 (админка), README.md (таблица сервисов). Минимум 4 места.
 
 ### 9. Документировать результаты
 

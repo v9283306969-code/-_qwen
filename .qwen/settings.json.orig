@@ -5,7 +5,18 @@
       "Agent(general-purpose)",
       "Bash(del *)",
       "Bash(chcp *)",
-      "Bash(copy *)"
+      "Bash(copy *)",
+      "Bash(git init)",
+      "Bash(add *)",
+      "Bash(echo *)",
+      "Bash(winget *)",
+      "Bash(gh *)",
+      "Bash(\"c:\\program files\\github cli\\gh.exe\" *)",
+      "Bash(do *)",
+      "Bash(\"c:\\program\" *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(eof)"
     ]
   },
   "$version": 4

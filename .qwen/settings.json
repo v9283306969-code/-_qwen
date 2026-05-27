@@ -6,7 +6,18 @@
       "Bash(del *)",
       "Bash(chcp *)",
       "Bash(copy *)",
-      "Bash(git init)"
+      "Bash(git init)",
+      "Bash(add *)",
+      "Bash(echo *)",
+      "Bash(winget *)",
+      "Bash(gh *)",
+      "Bash(\"c:\\program files\\github cli\\gh.exe\" *)",
+      "Bash(do *)",
+      "Bash(\"c:\\program\" *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(eof)",
+      "Bash(git reset *)"
     ]
   },
   "$version": 4
