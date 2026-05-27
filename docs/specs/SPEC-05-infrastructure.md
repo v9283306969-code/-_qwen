@@ -222,13 +222,15 @@ jobs:
 
 | Файл | Назначение | Создан? |
 |---|---|---|
-| `docker-compose.yml` | Локальная разработка | [ ] |
-| `docker-compose.prod.yml` | Production overrides | [ ] |
-| `.env.example` | Шаблон переменных | [ ] |
-| `.dockerignore` | Исключения для Docker | [ ] |
-| `.github/workflows/ci.yml` | CI/CD pipeline | [ ] |
-| `services/*/Dockerfile` | Образ каждого сервиса | [ ] |
-| `monitoring/sentry.config.ts` | Sentry конфигурация | [ ] |
+| `docker-compose.yml` | Локальная разработка (production-like) | ✅ |
+| `docker-compose.prod.yml` | Production overrides | ✅ |
+| `docker-compose.dev.yml` | Dev overrides (live-reload, debug ports) | ✅ |
+| `.env.example` | Шаблон переменных | ✅ |
+| `.dockerignore` | Исключения для Docker (общий + per-service) | ✅ |
+| `.github/workflows/ci.yml` | CI/CD pipeline | ✅ |
+| `services/*/Dockerfile` | Образ каждого сервиса (multi-stage) | ✅ |
+| `services/strapi/` | Папка для Strapi CMS | ✅ (placeholder) |
+| `monitoring/sentry.config.ts` | Sentry конфигурация | ⏳ |
 
 ---
 
@@ -236,25 +238,25 @@ jobs:
 
 | Шаг | Описание | Статус | Дата | Заметки |
 |---|---|---|---|---|
-| 1 | docker-compose.yml (PostgreSQL, Redis, Strapi) | [ ] | | |
-| 2 | .env.example, .env.local, .gitignore | [ ] | | |
-| 3 | Dockerfile для каждого сервиса | [ ] | | |
-| 4 | Health check для каждого контейнера | [ ] | | |
-| 5 | Настройка GitHub Actions (lint, test) | [ ] | | |
-| 6 | gitleaks security scan | [ ] | | |
-| 7 | Деплой на Vercel (фронтенд) | [ ] | | |
-| 8 | Деплой на Railway (бэкенд) | [ ] | | |
-| 9 | Sentry для мониторинга | [ ] | | |
-| 10 | UptimeRobot для доступности | [ ] | | |
-| 11 | correlationId middleware | [ ] | | |
-| 12 | Документация: README для разработчиков | [ ] | | |
+| 1 | docker-compose.yml (PostgreSQL, Redis, Strapi) | ✅ | 2026-05-27 | Все сервисы + health checks |
+| 2 | .env.example, .env.local, .gitignore | ✅ | 2026-05-27 | Полный шаблон с DB, JWT, YooKassa, CDEK, Sentry |
+| 3 | Dockerfile для каждого сервиса | ✅ | 2026-05-27 | Multi-stage, non-root user, HEALTHCHECK |
+| 4 | Health check для каждого контейнера | ✅ | 2026-05-27 | `wget /health` для всех сервисов |
+| 5 | Настройка GitHub Actions (lint, test) | ✅ | 2026-05-27 | Node.js + Python, Docker build stage |
+| 6 | gitleaks security scan | ✅ | 2026-05-27 | + pip-audit, npm audit |
+| 7 | Деплой на Vercel (фронтенд) | ⏳ future | | Раскомментировать deploy-frontend в ci.yml |
+| 8 | Деплой на Railway (бэкенд) | ⏳ future | | Раскомментировать deploy-backend в ci.yml |
+| 9 | Sentry для мониторинга | ⏳ future | | `SENTRY_DSN` в env, добавить sentry.config.ts |
+| 10 | UptimeRobot для доступности | ⏳ future | | После деплоя |
+| 11 | correlationId middleware | ⏳ future | | В gateway middleware |
+| 12 | Документация: README для разработчиков | ⏳ future | | Инструкция по `docker-compose up` |
 
 ### Текущий контекст
 
-- **Последнее действие:** —
-- **Следующий шаг:** Шаг 1: docker-compose.yml
-- **Открытые вопросы:** —
-- **Временное состояние:** Файлы не созданы
+- **Последнее действие:** Step 2.5 completed — Docker Compose + Dockerfiles + CI/CD
+- **Следующий шаг:** Step 2.6 — CI/CD refinement (when deploy credentials available)
+- **Открытые вопросы:** Docker не установлен на текущей машине — проверка после установки
+- **Временное состояние:** Файлы готовы, ждут запуска `docker-compose up`
 
 ---
 

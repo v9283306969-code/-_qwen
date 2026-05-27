@@ -40,7 +40,7 @@
 | 2.2 | Создание дорожной карты реализации | ✅ |
 | 2.3 | Создание технических заданий (ТЗ) | ✅ | Создано 6 файлов: SPEC-01...06 в `docs/specs/` |
 | 2.4 | Создание репозитория проекта | ✅ | Инициализирован Git, 42 файла, `.gitignore` обновлён (Python, секреты, OS-temp), `.gitattributes` для EOL
-| 2.5 | Настройка Docker Compose | ⏳ |
+| 2.5 | Настройка Docker Compose | ✅ | 3 compose-файла (prod/dev/override), 4 Dockerfile (multi-stage), health checks, `.env.example`, CI с Docker-build stage
 | 2.6 | Настройка CI/CD | ⏳ |
 
 ## Этап 3: Разработка MVP
