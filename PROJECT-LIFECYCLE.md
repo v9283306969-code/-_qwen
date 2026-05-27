@@ -133,6 +133,11 @@
 
 #### ШАГ 3.1.3: Интеграция со Strapi CMS
 - **Что:** Подключить Strapi для контента товаров (описания, медиа)
+- **⚠️ ПРЕДВАРИТЕЛЬНО:** Контейнер `strapi` в docker-compose.yml — это Express-заглушка (шаг 2.5). Перед интеграцией нужно:
+  1. Удалить Express-заглушку из docker-compose.yml
+  2. Инициализировать полноценный Strapi v5: `cd services/strapi && npx create-strapi-app@latest . --quickstart --no-run`
+  3. Закоммитить стрapi-проект в `services/strapi/`
+  4. Вернуть `command: npm run develop` в docker-compose.yml
 - **Роль:** Бэкенд-разработчик
 - **Промт:** `templates/backend-dev.md`
 - **Результат:** Вебхук Strapi → Product Service

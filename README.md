@@ -48,7 +48,7 @@ docker compose ps
 |---|---|---|---|
 | PostgreSQL | 5432 | ✅ | Основная БД (все сервисы) |
 | Redis | 6379 | ✅ | Кэш, сессии, корзины |
-| Strapi | 1337 | ⏳ scaffold | Express-заглушка, полноценный Strapi — Этап 4 |
+| Strapi | 1337 | ⏳ scaffold | **Express-заглушка!** Полноценный Strapi v5 — Этап 4 (см. SPEC-05) |
 | Gateway | 4000 | ⏳ scaffold | Express `/health`, GraphQL — Этап 3 |
 | Product Service | 3001 | ⏳ scaffold | Express `/health`, NestJS — Этап 3 |
 | Order Service | 3002 | ⏳ scaffold | Express `/health`, NestJS — Этап 3 |

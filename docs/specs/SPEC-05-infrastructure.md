@@ -46,7 +46,7 @@
 docker-compose.yml
 ├── postgres (PostgreSQL 16)          # БД для всех сервисов
 ├── redis (Redis 7)                   # Кэш, сессии, корзины
-├── strapi (Strapi CMS)               # Headless CMS
+├── strapi (Strapi CMS)               # ⚠️ SCAFFOLD: Express-заглушка, заменить на полноценный Strapi v5 на Этапе 4
 ├── product-service                   # Node.js + NestJS
 ├── order-service                     # Node.js + NestJS
 ├── partner-service                   # Python + FastAPI
@@ -274,6 +274,7 @@ jobs:
 | 2026-05-25 | Vercel для Next.js — лучшая интеграция (ISR, Image Optimization) | Qwen (Архитектор) |
 | 2026-05-25 | Railway для бэкенда — проще чем свой VPS, бесплатный тариф | Qwen (Архитектор) |
 | 2026-05-25 | gitleaks блокирует коммиты с accidental secrets | Qwen (DevOps) |
+| 2026-05-27 | **⚠️ Strapi — Express-заглушка вместо полноценного Strapi.** Причина: `npx create-strapi-app` требует интерактивного ввода, не работает в Docker. Scaffold добавлен только для верификации infrastructure (шаг 2.5). Действия: на Этапе 4 запустить `npx create-strapi-app@latest` в `services/strapi/`, закоммитить проект, заменить команду в docker-compose.yml на `npm run develop`. | Qwen (DevOps) |
 
 ---
 

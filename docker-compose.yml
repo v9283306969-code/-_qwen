@@ -50,8 +50,10 @@ services:
     networks:
       - mlecp-network
 
-  # Headless CMS (Strapi) — scaffold на базе Express
-  # На Этапе 4 заменить на полноценный Strapi проект
+  # Headless CMS (Strapi) — ⚠️ EXPRESS SCAFFOLD, заменить на полноценный Strapi на Этапе 4
+  # TODO(Этап 4): 1) cd services/strapi && npx create-strapi-app@latest . --quickstart --no-run
+  #               2) закоммитить strapi-проект, 3) вернуть command: npm run develop
+  # Подробности: docs/specs/SPEC-05-infrastructure.md → Заметки и принятые решения
   strapi:
     image: node:20-alpine
     container_name: mlecp-strapi
