@@ -1,3 +1,7 @@
+// ⚠️ SCAFFOLD — Express для Docker-верификации (шаг 2.5)
+// 🔧 Этап 3: Заменить на Apollo GraphQL Gateway (Federation) по спецификации
+// Подробности: docs/architecture/architecture-mlecp.html, docs/specs/SPEC-05-infrastructure.md
+
 import express, { Request, Response } from 'express';
 
 const app = express();

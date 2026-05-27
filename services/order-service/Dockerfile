@@ -1,8 +1,9 @@
 # ========================================
 # Order Service — Multi-stage Dockerfile
 # ========================================
-# Сборка: docker build -t mlecp-order-service .
-# Запуск: docker run -p 3002:3002 mlecp-order-service
+# ⚠️ SCAFFOLD (шаг 2.5): Express с /health. Этап 3: заменить на NestJS + Drizzle (SPEC-02)
+# ⚠️ pnpm@9: зафиксирован для совместимости с Node.js 20. При Node.js 22+ — проверить latest.
+# ⚠️ --no-frozen-lockfile: lock-файлов нет в scaffold. Этап 3: вернуть --frozen-lockfile.
 # ========================================
 
 # ---------- STAGE 1: Зависимости ----------

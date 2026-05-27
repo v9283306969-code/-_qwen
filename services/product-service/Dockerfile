@@ -1,8 +1,9 @@
 # ========================================
 # Product Service — Multi-stage Dockerfile
 # ========================================
-# Сборка: docker build -t mlecp-product-service .
-# Запуск: docker run -p 3001:3001 mlecp-product-service
+# ⚠️ SCAFFOLD (шаг 2.5): Express с /health. Этап 3: заменить на NestJS + Drizzle (SPEC-01)
+# ⚠️ pnpm@9: зафиксирован для совместимости с Node.js 20. При Node.js 22+ — проверить latest.
+# ⚠️ --no-frozen-lockfile: lock-файлов нет в scaffold. Этап 3: вернуть --frozen-lockfile.
 # ========================================
 
 # ---------- STAGE 1: Зависимости ----------

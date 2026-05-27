@@ -256,14 +256,17 @@ jobs:
 - **Последнее действие:** Step 2.5 verified — `docker compose up` проверен 2026-05-27
 - **Следующий шаг:** Step 2.6 — CI/CD refinement (pre-commit hooks, Conventional Commits)
 - **Открытые вопросы:**
-  - Strapi: команда `npx strapi new` устарела (v4/v5). Требует исправления при реализации Этапа 4.
-  - Микросервисы: Dockerfile готовы, но кода нет (Этап 3). Сборка микросервисов ожидаемо падает.
+  - Strapi: команда инициализации устарела. Express-scaffold в docker-compose.yml. Полноценный Strapi — Этап 4. См. STEP 3.1.3 в PROJECT-LIFECYCLE.md.
+  - Микросервисы: Express/FastAPI scaffold вместо NestJS/Apollo по SPEC. Замена — Начало Этапа 3.
+  - `--no-frozen-lockfile` в Dockerfile: временное решение. Вернуть `--frozen-lockfile` когда будут lock-файлы.
+  - pnpm@9 зафиксирован для Node.js 20 совместимости. При Node.js 22+ проверить latest.
+  - Partner-service requirements.txt: минимальный. Расширить до SPEC-03 при старте Этапа 3.
 - **Результаты проверки 2026-05-27:**
   - ✅ PostgreSQL 16 — healthy, подключение работает
   - ✅ Redis 7 — healthy, PING/PONG работает
-  - ❌ Strapi — падает (устаревшая команда инициализации)
-  - ❌ Микросервисы (gateway, product, order, partner) — нет package.json/tsconfig, сборка падает
-  - ⚠️ `version: '3.9'` в docker-compose.yml — устаревший атрибут (warning)
+  - ✅ Strapi — Express-scaffold healthy (полноценный Strapi — Этап 4)
+  - ✅ Микросервисы — Express/FastAPI scaffold, все healthy
+  - ⚠️ Архитектурные отклонения: Express вместо NestJS, нет Apollo GraphQL, нет lock-файлов (см. «Известные ограничения scaffold» ниже)
 
 ---
 
@@ -306,8 +309,11 @@ jobs:
 
 **Известные ограничения scaffold**:
 - Strapi: Express-заглушка (port 1337), полноценный Strapi — Этап 4
-- Микросервисы: Express/FastAPI заглушки с `/health`, код — Этап 3
-- pnpm: используется v9 (совместима с Node.js 20), lock-файлы появятся на Этапе 3
+- Микросервисы: Express/FastAPI заглушки с `/health`. По SPEC-01, SPEC-02 должен быть **NestJS**. Замена на NestJS — Начало Этапа 3.
+- **Gateway**: сейчас Express (только `/health`). По архитектуре — **Apollo GraphQL Federation** / GraphQL Gateway. Замена — Начало Этапа 3.
+- `--no-frozen-lockfile` в Dockerfile: lock-файлов пока нет. При создании реальных сервисов вернуть `--frozen-lockfile` для CI/CD reproducibility.
+- Partner-service requirements.txt: минимальный (fastapi + uvicorn), Dockerfile ставит gcc/libpq-dev (для psycopg2, которого пока нет). При старте Этапа 3 расширить requirements.txt до полного набора (SPEC-03).
+- pnpm@9 зафиксирован (совместим с Node.js 20). При обновлении Node.js до 22+ — проверить совместимость pnpm latest.
 
 ---
 

@@ -1,8 +1,8 @@
 # ========================================
 # Partner Service — Multi-stage Dockerfile (Python)
 # ========================================
-# Сборка: docker build -t mlecp-partner-service .
-# Запуск: docker run -p 3003:3003 mlecp-partner-service
+# ⚠️ SCAFFOLD (шаг 2.5): FastAPI с /health. Этап 3: развернуть до SPEC-03 (SQLAlchemy, Alembic, psycopg2)
+# ⚠️ requirements.txt: минимальный (fastapi, uvicorn). gcc/libpq-dev установлены под psycopg2, но psycopg2 пока не в requirements.txt.
 # ========================================
 
 # ---------- STAGE 1: Зависимости ----------

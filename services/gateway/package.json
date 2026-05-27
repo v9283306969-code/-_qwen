@@ -1,6 +1,7 @@
 {
   "name": "@mlecp/gateway",
   "version": "0.1.0-scaffold",
+  "_comment": "⚠️ SCAFFOLD: Express для Docker-верификации. Этап 3: заменить на Apollo GraphQL + NestJS (SPEC-05)",
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

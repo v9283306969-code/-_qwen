@@ -1,6 +1,7 @@
 {
   "name": "@mlecp/order-service",
   "version": "0.1.0-scaffold",
+  "_comment": "⚠️ SCAFFOLD: Express для Docker. Этап 3: заменить на NestJS + Drizzle (SPEC-02)",
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

@@ -1,8 +1,9 @@
 # ========================================
 # Gateway Service — Multi-stage Dockerfile
 # ========================================
-# Сборка: docker build -t mlecp-gateway .
-# Запуск: docker run -p 4000:4000 mlecp-gateway
+# ⚠️ SCAFFOLD (шаг 2.5): Express с /health. Этап 3: заменить на NestJS (SPEC-05)
+# ⚠️ pnpm@9: зафиксирован для совместимости с Node.js 20. При Node.js 22+ — проверить latest.
+# ⚠️ --no-frozen-lockfile: lock-файлов нет в scaffold. Этап 3: вернуть --frozen-lockfile.
 # ========================================
 
 # ---------- STAGE 1: Зависимости ----------
