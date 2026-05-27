@@ -30,7 +30,7 @@ module.exports = {
     'scope-enum': [
       1,
       'always',
-      ['gateway', 'product', 'order', 'partner', 'web', 'admin', 'shared', 'infra', 'docs', 'ci', 'deps', 'release']
+      ['gateway', 'product', 'order', 'partner', 'web', 'admin', 'shared', 'infra', 'docs', 'ci', 'deps', 'release', 'tests']
     ],
 
     'subject-case': [
