@@ -1,0 +1,42 @@
+#!/bin/sh
+# Pre-commit hook: gitleaks scan
+# Scans staged changes for secrets before commit
+
+echo "🔍 Running gitleaks pre-commit scan..."
+
+# Check if gitleaks is installed
+if ! command -v gitleaks &> /dev/null; then
+    # Try to run via Docker
+    if command -v docker &> /dev/null; then
+        # Get list of staged files
+        STAGED_FILES=$(git diff --cached --name-only --diff-filter=d 2>/dev/null)
+        if [ -n "$STAGED_FILES" ]; then
+            echo "📄 Scanning staged files with gitleaks..."
+            git diff --cached --name-only --diff-filter=d | docker run --rm -i zricethezav/gitleaks:latest detect --report-format json --report-path /dev/null 2>/dev/null
+            EXIT_CODE=$?
+            if [ $EXIT_CODE -ne 0 ]; then
+                echo "❌ Gitleaks found potential secrets in staged changes!"
+                echo "   Use 'git commit --no-verify' to bypass (only if you're sure it's a false positive)"
+                exit 1
+            fi
+        fi
+        echo "✅ Gitleaks scan passed (Docker)"
+        exit 0
+    else
+        echo "⚠️  Gitleaks not installed. Install it: https://github.com/gitleaks/gitleaks#installing"
+        echo "   Or use 'git commit --no-verify' to bypass"
+        exit 0
+    fi
+fi
+
+# Run gitleaks directly
+gitleaks detect --staged --report-format json --report-path /dev/null 2>/dev/null
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo "❌ Gitleaks found potential secrets in staged changes!"
+    echo "   Use 'git commit --no-verify' to bypass (only if you're sure it's a false positive)"
+    exit 1
+fi
+
+echo "✅ Gitleaks scan passed"

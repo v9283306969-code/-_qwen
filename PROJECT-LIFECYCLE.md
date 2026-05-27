@@ -108,10 +108,18 @@
 - **Верификация (2026-05-27):** 7 контейнеров подняты, все healthy. PostgreSQL + Redis — volume persistence. Strapi — Express-scaffold (полноценный Strapi — Этап 4). Микросервисы — заглушки (реальный код — Этап 3).
 
 ### ШАГ 2.6: Настройка CI/CD
-- **Что:** GitHub Actions для тестов, сборки, деплоя
+- **Что:** Pre-commit hooks, Conventional Commits, release workflow, branching strategy
 - **Роль:** DevOps
 - **Промт:** `templates/devops.md`
-- **Результат:** `.github/workflows/` конфигурации
+- **Результат:**
+  - `.husky/pre-commit` — gitleaks scan перед каждым коммитом
+  - `.husky/commit-msg` — валидация Conventional Commits
+  - `commitlint.config.js` — правила (type, scope, maxLength)
+  - `.gitleaks.toml` — custom config с allowlist для доков
+  - `.github/workflows/ci.yml` — добавлен commitlint job + `develop` + `release/*` branches + gitleaks custom config
+  - `.github/workflows/release.yml` — push тега `v*` → GitHub Release + Docker build/push к GHCR
+  - `docs/BRANCHING.md` — full branching strategy (main/develop/feat/fix/release/hotfix)
+  - `package.json` — Husky v9 + @commitlint/cli + devDependencies
 
 ---
 

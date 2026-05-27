@@ -69,3 +69,34 @@ docker compose down
 # Полная очистка (включая volumes)
 docker compose down -v
 ```
+
+## 📋 Contributing
+
+### Conventional Commits
+
+```
+<type>(<scope>): <description>
+
+feat(gateway): add GraphQL schema for products
+fix(order): validate shipping address on checkout
+docs(SPEC-01): update API endpoints table
+```
+
+### Pre-commit hooks
+
+- **gitleaks** — автоматически сканирует коммиты на секреты
+- **commitlint** — проверяет формат commit message
+
+При `pnpm install` hooks установятся автоматически (husky `prepare` скрипт).
+
+### Branching
+
+Подробная стратегия: `docs/BRANCHING.md`
+
+| Ветка | Назначение |
+|---|---|
+| `main` | Production-ready |
+| `develop` | Интеграция фич |
+| `feat/*`, `fix/*` | Фичи и фиксы (PR → develop) |
+| `release/v*` | Подготовка релиза (PR → main → tag) |
+| `hotfix/*` | Срочные фиксы (PR → main → tag) |

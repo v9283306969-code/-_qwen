@@ -171,9 +171,9 @@ jobs:
 | FR-3 | Health check для каждого контейнера | must | FR-2 | ✅ done |
 | FR-4 | .env.example с шаблоном переменных | must | — | ✅ done |
 | FR-5 | .env.local в .gitignore | must | FR-4 | ✅ done |
-| FR-6 | GitHub Actions: lint + type-check | must | — | pending |
-| FR-7 | GitHub Actions: unit-тесты | must | FR-6 | pending |
-| FR-8 | GitHub Actions: security scan (gitleaks) | must | — | pending |
+| FR-6 | GitHub Actions: lint + type-check | must | — | ✅ done |
+| FR-7 | GitHub Actions: unit-тесты | must | FR-6 | ✅ done |
+| FR-8 | GitHub Actions: security scan (gitleaks) | must | — | ✅ done |
 | FR-9 | Автодеплой фронтенда на Vercel | should | FR-7 | pending |
 | FR-10 | Автодеплой бэкенда на Railway | should | FR-7 | pending |
 | FR-11 | Sentry для фронтенда | should | — | pending |
@@ -249,12 +249,16 @@ jobs:
 | 9 | Sentry для мониторинга | ⏳ future | | `SENTRY_DSN` в env, добавить sentry.config.ts |
 | 10 | UptimeRobot для доступности | ⏳ future | | После деплоя |
 | 11 | correlationId middleware | ⏳ future | | В gateway middleware |
-| 12 | Документация: README для разработчиков | ⏳ future | | Инструкция по `docker-compose up` |
+| 12 | Документация: README для разработчиков | ⏳ future | | Инструкция по `docker compose up` |
+| 13 | Pre-commit hooks (gitleaks local) | ✅ | 2026-05-27 | Husky v9, .husky/pre-commit |
+| 14 | Conventional Commits (commitlint) | ✅ | 2026-05-27 | Husky commit-msg + CI job |
+| 15 | Release workflow (tag-based, GHCR) | ✅ | 2026-05-27 | .github/workflows/release.yml |
+| 16 | Branching strategy документация | ✅ | 2026-05-27 | docs/BRANCHING.md |
 
 ### Текущий контекст
 
-- **Последнее действие:** Step 2.5 verified — `docker compose up` проверен 2026-05-27
-- **Следующий шаг:** Step 2.6 — CI/CD refinement (pre-commit hooks, Conventional Commits)
+- **Последнее действие:** Step 2.6 complete — pre-commit hooks, Conventional Commits, release workflow, branching strategy
+- **Следующий шаг:** Этап 3.1.1 — Схема БД продуктового сервиса (Drizzle ORM)
 - **Открытые вопросы:**
   - Strapi: команда инициализации устарела. Express-scaffold в docker-compose.yml. Полноценный Strapi — Этап 4. См. STEP 3.1.3 в PROJECT-LIFECYCLE.md.
   - Микросервисы: Express/FastAPI scaffold вместо NestJS/Apollo по SPEC. Замена — Начало Этапа 3.

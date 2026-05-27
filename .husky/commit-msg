@@ -1,0 +1,41 @@
+#!/bin/sh
+# Commit-msg hook: Conventional Commits validation via commitlint
+
+echo "📝 Validating commit message (Conventional Commits)..."
+
+# Read commit message from $1 (passed by git)
+if [ -z "$1" ]; then
+    # If no argument, read from .git/COMMIT_EDITMSG
+    COMMIT_MSG_FILE=".git/COMMIT_EDITMSG"
+else
+    # Husky passes the commit message file as $1
+    COMMIT_MSG_FILE="$1"
+fi
+
+if [ ! -f "$COMMIT_MSG_FILE" ]; then
+    echo "❌ Cannot find commit message file: $COMMIT_MSG_FILE"
+    exit 1
+fi
+
+# Check if commitlint is available
+if command -v npx &> /dev/null; then
+    npx --no -- commitlint --edit "$COMMIT_MSG_FILE" 2>/dev/null
+    EXIT_CODE=$?
+else
+    echo "⚠️  npx not found. Install Node.js and run 'pnpm install'"
+    echo "   Or use 'git commit --no-verify' to bypass"
+    exit 0
+fi
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "💡 Examples of valid commit messages:"
+    echo "   feat(gateway): add GraphQL schema for products"
+    echo "   fix(order): validate shipping address on checkout"
+    echo "   docs(SPEC-01): update API endpoints table"
+    echo "   ci: add commitlint to CI pipeline"
+    echo "   chore(deps): update pnpm to 9.5.0"
+    exit 1
+fi
+
+echo "✅ Commit message is valid"

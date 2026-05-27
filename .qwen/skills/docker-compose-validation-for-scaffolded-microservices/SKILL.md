@@ -3,7 +3,7 @@ name: docker-compose-validation-for-scaffolded-microservices
 description: Полная проверка docker-compose в проектах-каркасах: scaffold-файлы, Dockerfile-фиксы, health checks, инфраструктурные тесты
 source: auto-skill
 extracted_at: '2026-05-27T18:02:54.728Z'
-updated_at: '2026-05-27T19:15:00.000Z'
+updated_at: '2026-05-27T20:18:00.000Z'
 ---
 
 ## Когда применять
@@ -138,3 +138,57 @@ strapi:
 ✅ Network: all containers on mlecp-network
 ⚠️ Scaffold limitations: Strapi=Express stub, microservices=health-only
 ```
+
+### 10. Пост-аудит: зафиксировать отклонения scaffold от SPEC
+
+После успешного запуска — **обязательный шаг**: систематически найти все отклонения scaffold от проектной документации и пометить их. Иначе при переходе к реальному коду разработчик (или ты в будущей сессии) потеряет контекст.
+
+#### 10a. Типичные отклонения для поиска
+
+| Отклонение | Что проверить | Где искать |
+|---|---|---|
+| Фреймворк ≠ SPEC | Express вместо NestJS, Express вместо Apollo GraphQL | package.json `dependencies`, Dockerfile comment |
+| Библиотеки ≠ SPEC | Минимальный requirements.txt без SQLAlchemy, psycopg2, Alembic | requirements.txt, SPEC-файл сервиса |
+| Lock-файлы отсутствуют | `--no-frozen-lockfile` — временное решение | Dockerfile RUN pnpm install |
+| Версия пакета зафиксирована | pnpm@9 вместо latest, node:20 вместо latest | Dockerfile FROM, RUN install |
+| Сервис-заглушка | Express-scaffold вместо Strapi, нет полноценной CMS | docker-compose.yml command |
+
+#### 10b. 4 уровня пометок (не менее 2)
+
+На каждое найденное отклонение добавить предупреждения минимум на двух уровнях:
+
+| Уровень | Где | Пример |
+|---|---|---|
+| **Файл** | `# ⚠️` comment в Dockerfile, `_comment` в package.json | В header Dockerfile: "⚠️ SCAFFOLD: Express вместо NestJS, Этап 3" |
+| **Документация** | SPEC-файл с обновлённым `current_context` разделом | `## Текущий контекст: Express scaffold работает, NestJS — Этап 3` |
+| **ROADMAP / дорожная карта** | Блок «Заметки» после завершённого шага | `⏳ Gateway: Express scaffold, GraphQL — Этап 3` |
+| **Память проекта** | Папка `.qwen/memory/current_work.md` | `⚠️ Отклонения scaffold: Gateway=Express, нужен Apollo` |
+
+#### 10c. Шаблон комментария в Dockerfile
+
+```
+# ========================================
+# <Service Name> — Multi-stage Dockerfile
+# ========================================
+# ⚠️ SCAFFOLD (шаг <N>): <what's here instead of SPEC>. Этап <N>: <what should be>.
+# ⚠️ <config deviation 1>
+# ⚠️ <config deviation 2>
+# ========================================
+```
+
+#### 10d. Шаблон записи в `current_work.md` памяти
+
+```
+**⚠️ Отклонения scaffold от SPEC (ВАЖНО для Этапа N)**:
+- <What's in SPEC> вместо <what's here> → заменить на Этапе N (подробности в <file>)
+- ...
+```
+
+### 11. Обновлять SPEC при каждом шаге
+
+После каждого успешного шага обновить:
+- `docs/specs/SPEC-XX.md` → разделы «Файлы проекта» ([ ]→✅), «Прогресс реализации», «Текущий контекст»
+- `ROADMAP.md` → строка шага и раздел «Что дальше»
+- `PROJECT-LIFECYCLE.md` → описание шага с результатами верификации
+
+Это не «бумажная работа» — без этого следующая сессия начнёт с нулевого контекста.

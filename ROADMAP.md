@@ -41,7 +41,7 @@
 | 2.3 | Создание технических заданий (ТЗ) | ✅ | Создано 6 файлов: SPEC-01...06 в `docs/specs/` |
 | 2.4 | Создание репозитория проекта | ✅ | Инициализирован Git, 42 файла, `.gitignore` обновлён (Python, секреты, OS-temp), `.gitattributes` для EOL
 | 2.5 | Настройка Docker Compose | ✅ | 3 compose-файла, 4 Dockerfile (multi-stage), 7 контейнеров healthy (PostgreSQL, Redis, Strapi-scaffold, Gateway, Product, Order, Partner), scaffold-код (Express/FastAPI с `/health`), `.env.example`, CI pipeline
-| 2.6 | Настройка CI/CD | ⏳ |
+| 2.6 | Настройка CI/CD | ✅ | Pre-commit hooks (gitleaks), Conventional Commits (commitlint), release workflow (GHCR), branching strategy (docs/BRANCHING.md), CI pipeline expanded to 7 stages |
 
 ## Этап 3: Разработка MVP
 
@@ -103,8 +103,8 @@
 
 ## Что дальше
 
-Следующий шаг: **2.6 — Настройка CI/CD** (pre-commit hooks, Conventional Commits, release-ветки).
-Подробнее: `PROJECT-LIFECYCLE.md` → Шаг 2.6
+Следующий шаг: **3.1.1 — Схема БД продуктового сервиса** (Drizzle ORM, миграции PostgreSQL).
+Подробнее: `PROJECT-LIFECYCLE.md` → Шаг 3.1.1. Переход из Этапа 2 (подготовка) в Этап 3 (разработка MVP).
 
 ### Заметки по инфраструктуре (шаг 2.5 завершён)
 

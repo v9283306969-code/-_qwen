@@ -4,12 +4,18 @@
   "private": true,
   "description": "Multi-Level E-Commerce Platform (Headless CMS + Microservices + MLM)",
   "scripts": {
-    "dev": "docker-compose up -d",
-    "stop": "docker-compose down",
-    "clean": "rm -rf node_modules apps/*/node_modules services/*/node_modules packages/*/node_modules"
+    "dev": "docker compose up -d",
+    "stop": "docker compose down",
+    "clean": "rm -rf node_modules apps/*/node_modules services/*/node_modules packages/*/node_modules",
+    "prepare": "husky"
   },
   "packageManager": "pnpm@9.5.0",
   "engines": {
     "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "husky": "^9.0.11"
   }
 }

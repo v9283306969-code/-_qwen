@@ -1,0 +1,35 @@
+# Gitleaks Configuration — MLECP
+title = "MLECP gitleaks config"
+
+# Разрешаем найденные "секреты", которые на самом деле заглушки/тестовые данные
+# Они НЕ попадут в production — используются только локально и в CI для тестов
+
+[[rules]]
+  id = "generic-secret"
+  description = "Generic secret"
+  regex = '''(?i)(secret|password|token|api_?key).{0,20}['\"][0-9a-zA-Z]{16,}['\"]'''
+
+  # Разрешаем тестовые секреты в SPEC/docs
+  [[rules.allowlist]]
+    paths = ['''docs/''', '''templates/''', '''prompts-drafts/''', '''\.md$''']
+
+[[rules]]
+  id = "jwt-token"
+  description = "JWT token"
+  regex = '''ey[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'''
+
+  # Разрешаем JWT в .env.example и docs
+  [[rules.allowlist]]
+    paths = ['''\.env\.example''', '''docs/''', '''\.md$''']
+
+[allowlist]
+  description = "Global allowlist"
+  paths = [
+    '''node_modules''',
+    '''.pnpm-store''',
+    '''pnpm-lock\.yaml''',
+    '''\.git''',
+    '''coverage''',
+    '''dist''',
+    '''build''',
+  ]
