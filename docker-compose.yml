@@ -1,12 +1,10 @@
 # ======================
 # MLECP — Docker Compose (Production-like)
 # ======================
-# Запуск: docker-compose up -d
-# Остановка: docker-compose down
-# Очистка volumes: docker-compose down -v
+# Запуск: docker compose up -d
+# Остановка: docker compose down
+# Очистка volumes: docker compose down -v
 # ======================
-
-version: '3.9'
 
 services:
 
@@ -52,46 +50,36 @@ services:
     networks:
       - mlecp-network
 
-  # Headless CMS (Strapi) — отдельная БД
+  # Headless CMS (Strapi) — scaffold на базе Express
+  # На Этапе 4 заменить на полноценный Strapi проект
   strapi:
     image: node:20-alpine
     container_name: mlecp-strapi
     working_dir: /app
-    # В production заменить на build из папки стрapi-проекта
     command: >
       sh -c "
-        if [ ! -f package.json ]; then
-          npm init -y &&
-          npm install @strapi/strapi@latest &&
-          npx strapi new . --quickstart --no-run;
-        fi &&
-        npm run develop
+        npm init -y &&
+        npm install express &&
+        node -e \"
+          const e = require('express');
+          const a = e();
+          a.get('/admin', (_, r) => r.send('<h1>Strapi Admin (scaffold)</h1>'));
+          a.get('/health', (_, r) => r.json({status:'ok', service:'strapi-scaffold'}));
+          a.listen(1337, () => console.log('[strapi] Scaffold on :1337'));
+        \"
       "
     environment:
       NODE_ENV: development
-      DATABASE_CLIENT: postgres
-      DATABASE_HOST: postgres
-      DATABASE_PORT: 5432
-      DATABASE_NAME: strapi
-      DATABASE_USERNAME: ${DB_USER:-dev}
-      DATABASE_PASSWORD: ${DB_PASS:-dev_password_change_me}
-      JWT_SECRET: ${JWT_SECRET:-change_me_super_secret_key_123}
-      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET:-change_me_strapi_admin_secret}
-      APP_KEYS: ${APP_KEYS:-temp_key_1,temp_key_2}
     ports:
       - "1337:1337"
-    volumes:
-      # Монтируем папку strapi для dev-режима (live-reload)
-      - ./services/strapi:/app
-      - strapi_node_modules:/app/node_modules
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:1337/admin || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:1337/health || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 15
+      retries: 10
       start_period: 30s
     networks:
       - mlecp-network
@@ -217,7 +205,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:${PARTNER_SERVICE_PORT:-3003}/health || exit 1"]
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:${PARTNER_SERVICE_PORT:-3003}/health')\" || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -232,7 +220,6 @@ services:
 volumes:
   pgdata:
     driver: local
-  strapi_node_modules:
 
 networks:
   mlecp-network:

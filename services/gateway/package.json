@@ -1,11 +1,12 @@
 {
-  "name": "@mlecp/product-service",
+  "name": "@mlecp/gateway",
   "version": "0.1.0-scaffold",
   "private": true,
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
-    "start:dev": "ts-node src/main.ts"
+    "start:dev": "ts-node src/main.ts",
+    "lint": "eslint src --ext .ts"
   },
   "dependencies": {
     "express": "^4.19.2"

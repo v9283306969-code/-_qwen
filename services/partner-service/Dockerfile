@@ -35,7 +35,8 @@ USER appuser
 
 EXPOSE 3003
 
+# Health check — python так как wget/curl нет в slim
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:3003/health || exit 1
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:3003/health')" || exit 1
 
 CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "3003"]

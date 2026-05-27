@@ -11,16 +11,18 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* ./
-RUN npm install -g pnpm@latest && pnpm config set store-dir .pnpm-store
-RUN pnpm install --frozen-lockfile
+RUN npm install -g pnpm@9 && pnpm config set store-dir .pnpm-store
+RUN pnpm install --no-frozen-lockfile
 
 # ---------- STAGE 2: Сборка ----------
 FROM node:20-alpine AS builder
 WORKDIR /app
+RUN npm install -g pnpm@9
 COPY --from=deps /app/node_modules ./node_modules
-COPY tsconfig.json tsconfig.build.json .eslintrc* ./
+COPY package.json ./
+COPY tsconfig.json tsconfig.build.json ./
 COPY src ./src
-RUN npm install -g pnpm && pnpm build
+RUN pnpm build
 
 # ---------- STAGE 3: Production ----------
 FROM node:20-alpine AS runner

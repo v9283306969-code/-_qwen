@@ -1,16 +1,9 @@
 # ======================
 # MLECP — Docker Compose (Development)
 # ======================
-# Запуск: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
-# Остановка: docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+# Запуск: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+# Остановка: docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 # ======================
-# Этот файл переопределяет сервисы для режима разработки:
-# - Монтирует исходный код в контейнеры (live-reload)
-# - Включает debug-порты
-# - Отключает production-оптимизации
-# ======================
-
-version: '3.9'
 
 services:
 

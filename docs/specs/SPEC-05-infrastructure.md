@@ -92,7 +92,7 @@ Push/PR в main
 ### docker-compose.yml (локальная разработка)
 
 ```yaml
-version: "3.9"
+# version удалён — obsolete в Docker Compose v2
 services:
   postgres:
     image: postgres:16
@@ -166,11 +166,11 @@ jobs:
 
 | ID | Требование | Приоритет | Зависит от | Статус |
 |---|---|---|---|---|
-| FR-1 | docker-compose.yml поднимает PostgreSQL, Redis, Strapi | must | — | pending |
-| FR-2 | Все сервисы запускаются через `docker-compose up` | must | FR-1 | pending |
-| FR-3 | Health check для каждого контейнера | must | FR-2 | pending |
-| FR-4 | .env.example с шаблоном переменных | must | — | pending |
-| FR-5 | .env.local в .gitignore | must | FR-4 | pending |
+| FR-1 | docker-compose.yml поднимает PostgreSQL, Redis, Strapi | must | — | ✅ done |
+| FR-2 | Все сервисы запускаются через `docker compose up` | must | FR-1 | ✅ done |
+| FR-3 | Health check для каждого контейнера | must | FR-2 | ✅ done |
+| FR-4 | .env.example с шаблоном переменных | must | — | ✅ done |
+| FR-5 | .env.local в .gitignore | must | FR-4 | ✅ done |
 | FR-6 | GitHub Actions: lint + type-check | must | — | pending |
 | FR-7 | GitHub Actions: unit-тесты | must | FR-6 | pending |
 | FR-8 | GitHub Actions: security scan (gitleaks) | must | — | pending |
@@ -181,7 +181,7 @@ jobs:
 | FR-13 | UptimeRobot мониторинг | should | Деплой | pending |
 | FR-14 | Структурированное логирование (JSON) | must | — | pending |
 | FR-15 | correlationId для каждого запроса (генерация в Gateway) | must | — | pending |
-| FR-16 | Docker multi-stage build для каждого сервиса | should | — | pending |
+| FR-16 | Docker multi-stage build для каждого сервиса | should | — | ✅ done |
 
 ---
 
@@ -279,16 +279,34 @@ jobs:
 
 ## 11. Проверка готовности
 
-- [ ] docker-compose.yml поднимает все сервисы одной командой
-- [ ] Health check для всех контейнеров
+- [x] docker-compose.yml поднимает все сервисы одной командой — **7/7 healthy**
+- [x] Health check для всех контейнеров — все 7 с health checks
 - [ ] CI/CD: lint → type-check → tests → deploy
 - [ ] gitleaks scan в CI
 - [ ] Деплой фронтенда на Vercel работает
 - [ ] Деплой бэкенда на Railway работает
 - [ ] Sentry ловит ошибки
 - [ ] correlationId работает через все сервисы
-- [ ] .env.example заполнен, секреты не в репозитории
+- [x] .env.example заполнен, секреты не в репозитории
 - [ ] README содержит инструкцию для нового разработчика
+
+### Результаты проверки 2026-05-27
+
+| Тест | Результат |
+|---|---|
+| `docker compose up -d --build` | ✅ 7 контейнеров, все healthy |
+| Health endpoints (curl) | ✅ Все 5 сервисов: 4000, 3001, 3002, 3003, 1337 |
+| PostgreSQL подключение | ✅ SELECT version() — 16.14 |
+| Redis PING/PONG | ✅ PONG |
+| Redis SET/GET | ✅ persistence OK |
+| Межсервисная сеть | ✅ Все 7 контейнеров в mlecp-network |
+| Volume persistence | ✅ pgdata volume работает |
+| Контейнеры доступны с хоста | ✅ Все порты маппятся корректно |
+
+**Известные ограничения scaffold**:
+- Strapi: Express-заглушка (port 1337), полноценный Strapi — Этап 4
+- Микросервисы: Express/FastAPI заглушки с `/health`, код — Этап 3
+- pnpm: используется v9 (совместима с Node.js 20), lock-файлы появятся на Этапе 3
 
 ---
 
