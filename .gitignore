@@ -26,7 +26,6 @@ out/
 
 # Docker
 docker-compose.override.yml
-docker-compose.prod.yml
 
 # Python
 __pycache__/

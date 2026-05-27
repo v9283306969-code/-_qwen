@@ -67,16 +67,28 @@ fi
 echo "✅ Gitleaks scan passed"
 ```
 
-**`.gitleaks.toml` — кастомная конфигурация с allowlist:**
+**`.gitleaks.toml` — кастомная конфигурация (v8 format):**
+⚠️ gitleaks v8 НЕ поддерживает `[[rules.allowlist]]` как array. Это вызывает ошибку:
+`"2 error(s) decoding: * 'Rules[0].AllowList' expected a map, got 'slice'"`
+
+Использовать только глобальный `[allowlist]`:
 ```toml
 title = "Project gitleaks config"
-[[rules]]
-  id = "generic-secret"
-  regex = '''(?i)(secret|password|token|api_?key).{0,20}['\"][0-9a-zA-Z]{16,}['\"]'''
-  [[rules.allowlist]]
-    paths = ['''docs/''', '''templates/''', '''\.env\.example''', '''\.md$''']
 [allowlist]
-  paths = ['''node_modules''', '''\.git''', '''coverage''', '''dist''', '''pnpm-lock\.yaml''']
+description = "Global allowlist for test secrets and docs"
+paths = [
+    '''node_modules''',
+    '''.pnpm-store''',
+    '''pnpm-lock\.yaml''',
+    '''.git''',
+    '''coverage''',
+    '''dist''',
+    '''build''',
+    '''docs/''',
+    '''templates/''',
+    '''\.md$''',
+    '''.env.example''',
+]
 ```
 
 ### 2. Conventional Commits (commitlint + husky)

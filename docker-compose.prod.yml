@@ -1,0 +1,83 @@
+# ========================================
+# MLECP — Docker Compose (Production Overrides)
+# ========================================
+# Использование: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ========================================
+# Этот файл переопределяет сервисы для production:
+# - Убирает ports (сервисы доступны только внутри network)
+# - Включает restart: always
+# - Убирает Strapi (в prod — отдельный деплой)
+# ========================================
+# ⚠️ deploy.resources и deploy.restart_policy работают ТОЛЬКО в Docker Swarm!
+# При обычном docker compose up эти секции игнорируются.
+# Для production рекомендуется использовать Railway/Supabase/Upstash (см. SPEC-05).
+# ========================================
+
+services:
+
+  postgres:
+    restart: always
+    # В production использовать Supabase — не поднимать локально
+    # Ports убираем — доступен только внутри docker network
+    ports: []
+
+  redis:
+    restart: always
+    # В production использовать Upstash — не поднимать локально
+    ports: []
+
+  # Strapi не нужен в production-сборке (отдельный деплой на Railway)
+  # strapi:
+  #   deploy:
+  #     replicas: 0
+
+  gateway:
+    restart: always
+    environment:
+      NODE_ENV: production
+      SENTRY_DSN: ${SENTRY_DSN}
+    ports:
+      - "4000:4000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+
+  product-service:
+    restart: always
+    environment:
+      NODE_ENV: production
+      SENTRY_DSN: ${SENTRY_DSN}
+    ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  order-service:
+    restart: always
+    environment:
+      NODE_ENV: production
+      SENTRY_DSN: ${SENTRY_DSN}
+    ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+
+  partner-service:
+    restart: always
+    environment:
+      SENTRY_DSN: ${SENTRY_DSN}
+    ports: []
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'

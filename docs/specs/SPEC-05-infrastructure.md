@@ -257,12 +257,19 @@ jobs:
 
 ### Текущий контекст
 
-- **Последнее действие:** Step 2.6 complete — pre-commit hooks, Conventional Commits, release workflow, branching strategy
+- **Последнее действие:** Step 2.6 complete — pre-commit hooks, Conventional Commits, release workflow, branching strategy, CI pipeline verified on GitHub (2026-05-27)
 - **Следующий шаг:** Этап 3.1.1 — Схема БД продуктового сервиса (Drizzle ORM)
 - **Открытые вопросы:**
   - Strapi: команда инициализации устарела. Express-scaffold в docker-compose.yml. Полноценный Strapi — Этап 4. См. STEP 3.1.3 в PROJECT-LIFECYCLE.md.
   - Микросервисы: Express/FastAPI scaffold вместо NestJS/Apollo по SPEC. Замена — Начало Этапа 3.
   - `--no-frozen-lockfile` в Dockerfile: временное решение. Вернуть `--frozen-lockfile` когда будут lock-файлы.
+  - pnpm@9 зафиксирован для Node.js 20 совместимости. При Node.js 22+ проверить latest.
+  - Partner-service requirements.txt: минимальный. Расширить до SPEC-03 при старте Этапа 3.
+- **Исправлено после аудита (2026-05-27):**
+  - docker-compose.prod.yml: удалён version: '3.9', добавлен warning о deploy/Swarm-only
+  - docker-compose.prod.yml: добавлен в .gitignore (был исключён, не попадал в репозиторий)
+  - package-lock.json: удалён (лишний npm lockfile, используется pnpm)
+  - SPEC-05 CI-диаграмма: в реальности CI работает на [main, develop, release/*], не только main (соответствует docs/BRANCHING.md)
   - pnpm@9 зафиксирован для Node.js 20 совместимости. При Node.js 22+ проверить latest.
   - Partner-service requirements.txt: минимальный. Расширить до SPEC-03 при старте Этапа 3.
 - **Результаты проверки 2026-05-27:**
