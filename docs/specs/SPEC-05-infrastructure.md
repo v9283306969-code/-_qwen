@@ -253,10 +253,17 @@ jobs:
 
 ### Текущий контекст
 
-- **Последнее действие:** Step 2.5 completed — Docker Compose + Dockerfiles + CI/CD
-- **Следующий шаг:** Step 2.6 — CI/CD refinement (when deploy credentials available)
-- **Открытые вопросы:** Docker не установлен на текущей машине — проверка после установки
-- **Временное состояние:** Файлы готовы, ждут запуска `docker-compose up`
+- **Последнее действие:** Step 2.5 verified — `docker compose up` проверен 2026-05-27
+- **Следующий шаг:** Step 2.6 — CI/CD refinement (pre-commit hooks, Conventional Commits)
+- **Открытые вопросы:**
+  - Strapi: команда `npx strapi new` устарела (v4/v5). Требует исправления при реализации Этапа 4.
+  - Микросервисы: Dockerfile готовы, но кода нет (Этап 3). Сборка микросервисов ожидаемо падает.
+- **Результаты проверки 2026-05-27:**
+  - ✅ PostgreSQL 16 — healthy, подключение работает
+  - ✅ Redis 7 — healthy, PING/PONG работает
+  - ❌ Strapi — падает (устаревшая команда инициализации)
+  - ❌ Микросервисы (gateway, product, order, partner) — нет package.json/tsconfig, сборка падает
+  - ⚠️ `version: '3.9'` в docker-compose.yml — устаревший атрибут (warning)
 
 ---
 
