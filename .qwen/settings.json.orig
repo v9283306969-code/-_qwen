@@ -17,7 +17,8 @@
       "Bash(git branch *)",
       "Bash(git push *)",
       "Bash(eof)",
-      "Bash(git reset *)"
+      "Bash(git reset *)",
+      "Bash(rd *)"
     ]
   },
   "$version": 4

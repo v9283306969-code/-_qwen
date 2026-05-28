@@ -18,7 +18,8 @@
       "Bash(git push *)",
       "Bash(eof)",
       "Bash(git reset *)",
-      "Bash(rd *)"
+      "Bash(rd *)",
+      "Bash(type *)"
     ]
   },
   "$version": 4
