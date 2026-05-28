@@ -47,7 +47,7 @@
 
 | Шаг | Описание | Статус |
 |---|---|---|
-| 3.1.1 | Схема БД продуктов | ⏳ |
+| 3.1.1 | Схема БД продуктов | ✅ | Drizzle ORM, 14 таблиц (categories, products, variants, media, specs, inventory, reservations, MLM prices, bundles) |
 | 3.1.2 | API каталога | ⏳ |
 | 3.1.3 | Интеграция со Strapi CMS | ⏳ |
 | 3.1.4 | Тесты продуктового сервиса | ⏳ |

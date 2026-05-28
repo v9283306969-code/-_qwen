@@ -234,8 +234,9 @@ product_media (id, product_id, strapi_media_id, image_url, alt_text, is_primary,
 | Файл | Назначение | Создан? |
 |---|---|---|
 | `services/product-service/src/index.ts` | Точка входа, NestJS bootstrap | [ ] |
-| `services/product-service/src/schema.ts` | Drizzle-схема БД | [ ] |
-| `services/product-service/src/drizzle/` | Миграции | [ ] |
+| `services/product-service/src/schema.ts` | Drizzle-схема БД (14 таблиц) | ✅ миграция применена |
+| `services/product-service/src/drizzle/` | Миграции (drizzle-kit) | ✅ 0000_regular_shard.sql |
+| `services/product-service/src/drizzle.config.ts` | Настройка drizzle-kit | ✅ |
 | `services/product-service/src/services/product.service.ts` | Бизнес-логика товаров | [ ] |
 | `services/product-service/src/services/category.service.ts` | Бизнес-логика категорий | [ ] |
 | `services/product-service/src/resolvers/product.resolver.ts` | GraphQL-резолверы | [ ] |
@@ -258,7 +259,7 @@ product_media (id, product_id, strapi_media_id, image_url, alt_text, is_primary,
 | Шаг | Описание | Статус | Дата | Заметки |
 |---|---|---|---|---|
 | 1 | Настройка проекта (NestJS, Drizzle, зависимости) | [ ] | | |
-| 2 | Схема БД (Drizzle), миграции | [ ] | | |
+| 2 | Схема БД (Drizzle), миграции | ✅ | 2026-05-28 | 14 таблиц, все соглашения зафиксированы |
 | 3 | Product Service: CRUD товаров | [ ] | | |
 | 4 | Category Service: CRUD категорий (дерево) | [ ] | | |
 | 5 | Price Service: управление ценами | [ ] | | |
@@ -272,10 +273,11 @@ product_media (id, product_id, strapi_media_id, image_url, alt_text, is_primary,
 
 ### Текущий контекст
 
-- **Последнее действие:** Шаг 11 (Dockerfile scaffold) — 2026-05-27, Docker Compose верификация прошла успешно
-- **Следующий шаг:** Шаг 1: Настройка проекта (NestJS, Drizzle, зависимости) — Этап 3
-- **Открытые вопросы:** Выбор между Express (scaffold) и NestJS (production) — архитектура предполагает NestJS
-- **Временное состояние:** Express scaffold работает в Docker (port 3001, `/health` healthy)
+- **Последнее действие:** Шаг 2 (Схема БД Drizzle + миграция 14 таблиц) — 2026-05-28
+- **Таблицы в БД:** categories, products, product_variants, product_media, product_specs, partner_tiers, product_partner_prices, commission_rules, warehouses, inventory, inventory_transactions, reservations, bundles, bundle_items
+- **Следующий шаг:** Шаг 1 (Настройка проекта: NestJS + Express + Drizzle ORM runtime) или сразу Шаг 3 (CRUD товаров)
+- **Открытые вопросы:** Выбор между Express и NestJS для runtime (пока Express scaffold, NestJS — цель)
+- **Временное состояние:** Миграция применена к mlecp_dev. drizzle-kit настроен, pnpm scripts: db:generate, db:migrate, db:studio
 
 ---
 
